@@ -1,6 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using RaremintShop.Data;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
+    new MySqlServerVersion(new Version(8, 0, 36))));
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -18,6 +26,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
