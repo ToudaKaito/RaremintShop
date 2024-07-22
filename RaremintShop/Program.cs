@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RaremintShop.Data;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using RaremintShop.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
     new MySqlServerVersion(new Version(8, 0, 36))));
+
+// ƒŠƒ|ƒWƒgƒŠ‚ÌˆË‘¶«’“ü
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddControllersWithViews();
 
