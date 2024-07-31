@@ -1,5 +1,6 @@
 ﻿using System;
 using RaremintShop.Models;
+using RaremintShop.Tests.Helpers;
 using Xunit;
 
 namespace RaremintShop.Tests.Models
@@ -9,8 +10,11 @@ namespace RaremintShop.Tests.Models
     /// </summary>
     public class ProductTests
     {
+        /// <summary>
+        /// 有効なデータでProductを作成できるかテストします。
+        /// </summary>
         [Fact]
-        public void CanCreateProduct_WithValidDate()
+        public void CanCreateProduct_WithValidData()
         {
             // Arrange
             var productName = "TestProduct";
@@ -22,16 +26,15 @@ namespace RaremintShop.Tests.Models
             var updatedAt = DateTime.Now;
 
             // Act
-            var product = new Product
-            {
-                ProductName = productName,
-                Category = category,
-                Price = price,
-                Stock = stock,
-                Description = description,
-                CreatedAt = createdAt,
-                UpdatedAt = updatedAt
-            };
+            var product = ProductTestHelper.CreateTestProduct(
+                productName: productName,
+                category: category,
+                price: price,
+                stock: stock,
+                description: description,
+                createdAt: createdAt,
+                updatedAt: updatedAt
+            );
 
             // Assert
             Assert.Equal(productName, product.ProductName);
@@ -43,20 +46,30 @@ namespace RaremintShop.Tests.Models
             Assert.Equal(updatedAt, product.UpdatedAt);
         }
 
+        /// <summary>
+        /// Productの詳細を更新できるかテストします。
+        /// </summary>
         [Fact]
         public void CanUpdateProductDetails()
         {
             // Arrange
-            var product = new Product
-            {
-                ProductName = "OldProduct",
-                Category = "Electronics",
-                Price = 49.99m,
-                Stock = 200,
-                Description = "An old test product",
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
-            };
+            var originalProductName = "OldProduct";
+            var originalCategory = "Electronics";
+            var originalPrice = 49.99m;
+            var originalStock = 200;
+            var originalDescription = "An old test product";
+            var originalCreatedAt = DateTime.Now;
+            var originalUpdatedAt = DateTime.Now;
+
+            var product = ProductTestHelper.CreateTestProduct(
+                productName: originalProductName,
+                category: originalCategory,
+                price: originalPrice,
+                stock: originalStock,
+                description: originalDescription,
+                createdAt: originalCreatedAt,
+                updatedAt: originalUpdatedAt
+            );
 
             var newProductName = "NewProduct";
             var newCategory = "Gadgets";

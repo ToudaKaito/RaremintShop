@@ -24,7 +24,13 @@ namespace RaremintShop.Tests.Models
             var updatedAt = DateTime.Now;
 
             // Act
-            var user = UserTestHelper.CreateTestUser(userName: userName, email: email, password: password, createdAt: createdAt, updatedAt: updatedAt);
+            var user = UserTestHelper.CreateTestUser(
+                userName: userName,
+                email: email,
+                password: password,
+                createdAt: createdAt, 
+                updatedAt: updatedAt
+                );
 
             // Assert
             Assert.NotNull(user);
@@ -42,7 +48,7 @@ namespace RaremintShop.Tests.Models
         public void CanUpdateUserDetails()
         {
             // Arrange
-            var originalCreatedAt = DateTime.Now.AddDays(-1);
+            var originalCreatedAt = DateTime.Now.AddDays(-1); // 作成日時を前日に設定
             var user = UserTestHelper.CreateTestUser(userName: "OldUser", email: "olduser@example.com", password: "oldpassword", createdAt: originalCreatedAt, updatedAt: DateTime.Now);
 
             var newUserName = "NewUser";

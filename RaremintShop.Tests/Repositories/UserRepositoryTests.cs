@@ -97,7 +97,7 @@ namespace RaremintShop.Tests.Repositories
         public void UpdateUser_ValidUser_UpdatesUser()
         {
             InitializeTestDatabase();
-            var originalCreatedAt = DateTime.Now.AddDays(-1);
+            var originalCreatedAt = DateTime.Now.AddDays(-1); // 作成日時を前日に設定
             var user = UserTestHelper.CreateTestUser(createdAt: originalCreatedAt);
             _context.Users.Add(user);
             _context.SaveChanges();
