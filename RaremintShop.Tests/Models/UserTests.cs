@@ -1,5 +1,6 @@
 ﻿using System;
 using RaremintShop.Models;
+using RaremintShop.Tests.Helpers;
 using Xunit;
 
 namespace RaremintShop.Tests.Models
@@ -9,6 +10,9 @@ namespace RaremintShop.Tests.Models
     /// </summary>
     public class UserTests
     {
+        /// <summary>
+        /// 有効なデータでユーザーを作成できることをテストします。
+        /// </summary>
         [Fact]
         public void CanCreateUser_WithValidData()
         {
@@ -20,16 +24,10 @@ namespace RaremintShop.Tests.Models
             var updatedAt = DateTime.Now;
 
             // Act
-            var user = new User
-            {
-                UserName = userName,
-                Email = email,
-                Password = password,
-                CreatedAt = createdAt,
-                UpdatedAt = updatedAt
-            };
+            var user = UserTestHelper.CreateTestUser(userName: userName, email: email, password: password, createdAt: createdAt, updatedAt: updatedAt);
 
             // Assert
+            Assert.NotNull(user);
             Assert.Equal(userName, user.UserName);
             Assert.Equal(email, user.Email);
             Assert.Equal(password, user.Password);
@@ -37,18 +35,15 @@ namespace RaremintShop.Tests.Models
             Assert.Equal(updatedAt, user.UpdatedAt);
         }
 
+        /// <summary>
+        /// ユーザーの詳細を更新できることをテストします。
+        /// </summary>
         [Fact]
         public void CanUpdateUserDetails()
         {
             // Arrange
-            var user = new User
-            {
-                UserName = "OldUser",
-                Email = "olduser@example.com",
-                Password = "oldpassword",
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
-            };
+            var originalCreatedAt = DateTime.Now.AddDays(-1);
+            var user = UserTestHelper.CreateTestUser(userName: "OldUser", email: "olduser@example.com", password: "oldpassword", createdAt: originalCreatedAt, updatedAt: DateTime.Now);
 
             var newUserName = "NewUser";
             var newEmail = "newuser@example.com";
@@ -62,9 +57,11 @@ namespace RaremintShop.Tests.Models
             user.UpdatedAt = newUpdatedAt;
 
             // Assert
+            Assert.NotNull(user);
             Assert.Equal(newUserName, user.UserName);
             Assert.Equal(newEmail, user.Email);
             Assert.Equal(newPassword, user.Password);
+            Assert.Equal(originalCreatedAt, user.CreatedAt); 
             Assert.Equal(newUpdatedAt, user.UpdatedAt);
         }
     }
