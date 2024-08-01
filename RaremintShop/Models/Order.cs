@@ -33,7 +33,7 @@ namespace RaremintShop.Models
         // パラメータレスコンストラクタ
         public Order()
         {
-            User = new User();
+            User = new User(); // TODO:Userの初期化について検討する
             OrderDate = DateTime.Now;
             Status = "Pending";
             CreatedAt = DateTime.Now;
@@ -42,15 +42,15 @@ namespace RaremintShop.Models
         }
 
         // 明示的なコンストラクタ
-        public Order(int userId, User user, decimal totalAmount)
+        public Order(int userId, User user, DateTime? orderDate = null, decimal totalAmount = 100.0m, string status = "Pending", DateTime? createdAt = null, DateTime? updatedAt = null)
         {
             UserID = userId;
             User = user ?? throw new ArgumentNullException(nameof(user));
+            OrderDate = orderDate ?? DateTime.Now;
             TotalAmount = totalAmount;
-            OrderDate = DateTime.Now;
-            Status = "Pending";
-            CreatedAt = DateTime.Now;
-            UpdatedAt = DateTime.Now;
+            Status = status;
+            CreatedAt = createdAt ?? DateTime.Now;
+            UpdatedAt = updatedAt ?? DateTime.Now;
             OrderDetails = new List<OrderDetail>();
         }
     }

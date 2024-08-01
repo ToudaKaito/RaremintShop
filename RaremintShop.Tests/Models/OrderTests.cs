@@ -1,5 +1,6 @@
 ﻿using System;
 using RaremintShop.Models;
+using RaremintShop.Tests.Helpers;
 using Xunit;
 
 namespace RaremintShop.Tests.Models
@@ -9,11 +10,14 @@ namespace RaremintShop.Tests.Models
     /// </summary>
     public class OrderTests
     {
+        /// <summary>
+        /// 有効なデータでOrderオブジェクトを作成できるかをテストします。
+        /// </summary>
         [Fact]
         public void CanCreateOrder_WithValidData()
         {
             // Arrange
-            var userId = 1;
+            var user = UserTestHelper.CreateTestUser();
             var orderDate = DateTime.Now;
             var totalAmount = 299.99m;
             var status = "Pending";
@@ -21,18 +25,11 @@ namespace RaremintShop.Tests.Models
             var updatedAt = DateTime.Now;
 
             // Act
-            var order = new Order
-            {
-                UserID = userId,
-                OrderDate = orderDate,
-                TotalAmount = totalAmount,
-                Status = status,
-                CreatedAt = createdAt,
-                UpdatedAt = updatedAt
-            };
+            var order = OrderTestHelper.CreateTestOrder(user.UserID, user, orderDate, totalAmount, status, createdAt, updatedAt);        
 
             // Assert
-            Assert.Equal(userId, order.UserID);
+            Assert.Equal(user.UserID, order.UserID);
+            Assert.Equal(user, order.User);
             Assert.Equal(orderDate, order.OrderDate);
             Assert.Equal(totalAmount, order.TotalAmount);
             Assert.Equal(status, order.Status);
@@ -40,38 +37,35 @@ namespace RaremintShop.Tests.Models
             Assert.Equal(updatedAt, order.UpdatedAt);
         }
 
+        /// <summary>
+        /// Orderオブジェクトの詳細を更新できるかをテストします。
+        /// </summary>
         [Fact]
         public void CanUpdateOrderDetails()
         {
             // Arrange
-            var order = new Order
-            {
-                UserID = 1,
-                OrderDate = DateTime.Now,
-                TotalAmount = 299.99m,
-                Status = "Pending",
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
-            };
+            var user = UserTestHelper.CreateTestUser();
+            var originalCreatedAt = DateTime.Now.AddDays(-1); // 作成日時を前日に設定
+            var order = OrderTestHelper.CreateTestOrder(user.UserID, user, createdAt: originalCreatedAt);
 
-            var newUserId = 2;
             var newOrderDate = DateTime.Now;
             var newTotalAmount = 399.99m;
             var newStatus = "Completed";
             var newUpdatedAt = DateTime.Now;
 
             // Act
-            order.UserID = newUserId;
             order.OrderDate = newOrderDate;
             order.TotalAmount = newTotalAmount;
             order.Status = newStatus;
             order.UpdatedAt = newUpdatedAt;
 
             // Assert
-            Assert.Equal(newUserId, order.UserID);
+            Assert.Equal(user.UserID, order.UserID);
+            Assert.Equal(user, order.User);
             Assert.Equal(newOrderDate, order.OrderDate);
             Assert.Equal(newTotalAmount, order.TotalAmount);
             Assert.Equal(newStatus, order.Status);
+            Assert.Equal(originalCreatedAt, order.CreatedAt);
             Assert.Equal(newUpdatedAt, order.UpdatedAt);
         }
     }

@@ -61,8 +61,8 @@ namespace RaremintShop.Tests.Repositories
         {
             // Arrange
             InitializeTestDatabase();
-            var product1 = ProductTestHelper.CreateTestProduct(1, "TestProduct1", category: "Category1");
-            var product2 = ProductTestHelper.CreateTestProduct(2, "TestProduct2", category: "Category2");
+            var product1 = ProductTestHelper.CreateTestProduct("TestProduct1", category: "Category1");
+            var product2 = ProductTestHelper.CreateTestProduct("TestProduct2", category: "Category2");
             _context.Products.AddRange(product1,product2);
             _context.SaveChanges();
 
@@ -118,7 +118,7 @@ namespace RaremintShop.Tests.Repositories
             // これにより、同じProductIDを持つエンティティが2つトラッキングされることで発生する競合エラーを防ぎます。
             _context.Entry(product).State = EntityState.Detached;
 
-            var updatedProduct = ProductTestHelper.CreateTestProduct(product.ProductID, "UpdatedProduct", 20.0m, 200, "UpdatedDescription", "UpdatedCategory", createdAt: originalCreatedAt);
+            var updatedProduct = ProductTestHelper.CreateTestProduct("UpdatedProduct", 20.0m, 200, "UpdatedDescription", "UpdatedCategory", createdAt: originalCreatedAt);
 
             // Act
             _productRepository.UpdateProduct(updatedProduct);

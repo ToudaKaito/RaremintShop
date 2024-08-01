@@ -108,7 +108,7 @@ namespace RaremintShop.Tests.Repositories
             _context.Entry(user).State = EntityState.Detached;
 
 
-            var updatedUser = UserTestHelper.CreateTestUser(user.UserID, "UpdatedUser", "updateduser@example.com", "updatedpassword123", createdAt: originalCreatedAt);
+            var updatedUser = UserTestHelper.CreateTestUser("UpdatedUser", "updateduser@example.com", "updatedpassword123", createdAt: originalCreatedAt);
 
             _userRepository.UpdateUser(updatedUser);
             var result = _context.Users.Find(updatedUser.UserID);
