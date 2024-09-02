@@ -36,7 +36,12 @@ namespace RaremintShop.Models
         }
 
         // 明示的なコンストラクタ
-        public User(string userName = "TestUser", string email = "test@example.com", string password = "password123", DateTime? createdAt = null, DateTime? updatedAt = null)
+        public User(
+            string userName = "TestUser", 
+            string email = "test@example.com", 
+            string password = "password123", 
+            DateTime? createdAt = null, 
+            DateTime? updatedAt = null)
         {
             UserName = userName;
             Email = email;

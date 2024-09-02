@@ -42,7 +42,14 @@ namespace RaremintShop.Models
         }
 
         // 明示的なコンストラクタ
-        public Order(int userId, User user, DateTime? orderDate = null, decimal totalAmount = 100.0m, string status = "Pending", DateTime? createdAt = null, DateTime? updatedAt = null)
+        public Order(
+            int userId,
+            User user,
+            DateTime? orderDate = null,
+            decimal totalAmount = 100.0m,
+            string status = "Pending",
+            DateTime? createdAt = null,
+            DateTime? updatedAt = null)
         {
             UserID = userId;
             User = user ?? throw new ArgumentNullException(nameof(user));

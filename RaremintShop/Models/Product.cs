@@ -41,7 +41,14 @@ namespace RaremintShop.Models
         }
 
         // 明示的なコンストラクタ
-        public Product(string productName = "TestProduct", decimal price = 10.0m, int stock = 100, string description = "Description", string category = "General", DateTime? createdAt = null, DateTime? updatedAt = null)
+        public Product(
+            string productName = "TestProduct", 
+            decimal price = 10.0m, 
+            int stock = 100, 
+            string description = "Description", 
+            string category = "General", 
+            DateTime? createdAt = null, 
+            DateTime? updatedAt = null)
         {
             ProductName = productName;
             Price = price;

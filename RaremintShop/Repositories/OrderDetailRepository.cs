@@ -20,17 +20,22 @@ namespace RaremintShop.Repositories
         }
 
         /// <summary>
-        /// 注文詳細IDに基づいて注文詳細を取得します。
+        /// 注文IDと商品IDに基づいて注文詳細を取得します。
         /// </summary>
-        /// <param name="orderDetailId">取得する注文詳細のID</param>
+        /// <param name="orderId">注文のID</param>
+        /// <param name="productId">商品のID</param>
         /// <returns>注文詳細エンティティ</returns>
-        public OrderDetail GetOrderDetailById(int orderDetailId)
+        public OrderDetail GetOrderDetailById(int orderId, int productId)
         {
-            var orderDetail = _context.OrderDetails.Find(orderDetailId);
-            if(orderDetail == null)
+            // 複合キーを使用してエンティティを取得
+            var orderDetail = _context.OrderDetails
+                .SingleOrDefault(od => od.OrderID == orderId && od.ProductID == productId);
+
+            if (orderDetail == null)
             {
-                throw new NullReferenceException($"OrderDetail with ID {orderDetailId} not found.");
+                throw new NullReferenceException($"OrderDetail with OrderID {orderId} and ProductID {productId} not found.");
             }
+
             return orderDetail;
         }
 

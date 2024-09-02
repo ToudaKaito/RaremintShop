@@ -31,10 +31,17 @@ namespace RaremintShop.Tests.Helpers
         /// <param name="stock">在庫数</param>
         /// <param name="description">説明</param>
         /// <param name="category">カテゴリ</param>
-        /// <param name="createdAt">作成日時（オプション）</param>
-        /// <param name="updatedAt">更新日時（オプション）</param>
+        /// <param name="createdAt">作成日時</param>
+        /// <param name="updatedAt">更新日時</param>
         /// <returns>新しいProductオブジェクト</returns>
-        public static Product CreateTestProduct(string productName = "TestProduct", decimal price = 10.0m, int stock = 100, string description = "Description", string category = "General", DateTime? createdAt = null, DateTime? updatedAt = null)
+        public static Product CreateTestProduct(
+            string productName = "TestProduct", 
+            decimal price = 10.0m, 
+            int stock = 100, 
+            string description = "Description", 
+            string category = "General", 
+            DateTime? createdAt = null, 
+            DateTime? updatedAt = null)
         {
             return new Product(productName, price, stock, description, category, createdAt, updatedAt);
         }

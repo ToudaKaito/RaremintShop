@@ -29,12 +29,22 @@ namespace RaremintShop.Models
         // パラメータレスコンストラクタ
         public OrderDetail()
         {
-            Order = new Order();
-            Product = new Product();
+            Order = new Order();     // TODO:Orderの初期化について検討する
+            Product = new Product(); // TODO:Productの初期化について検討する
+            CreatedAt = DateTime.Now;
+            UpdatedAt = DateTime.Now;
         }
 
         // 明示的なコンストラクタ
-        public OrderDetail(int orderId,Order order,int productId,Product product,int quantity,decimal price)
+        public OrderDetail(
+            int orderId,
+            Order order,
+            int productId,
+            Product product,
+            int quantity =1,
+            decimal price =10.0m,
+            DateTime? createdAt = null, 
+            DateTime? updatedAt = null)
         {
             OrderID = orderId;
             Order = order ?? throw new ArgumentNullException(nameof(order));
@@ -42,6 +52,8 @@ namespace RaremintShop.Models
             Product = product ?? throw new ArgumentNullException(nameof(product));
             Quantity = quantity;
             Price = price;
+            CreatedAt = createdAt ?? DateTime.Now;
+            UpdatedAt = updatedAt ?? DateTime.Now;
         }
 
     }

@@ -9,11 +9,12 @@ namespace RaremintShop.Repositories
     public interface IOrderDetailRepository
     {
         /// <summary>
-        /// 注文詳細IDに基づいて注文詳細を取得します。
+        /// 注文IDと商品IDに基づいて注文詳細を取得します。
         /// </summary>
-        /// <param name="orderDetailId">取得する注文詳細のID</param>
+        /// <param name="orderId">注文のID</param>
+        /// <param name="productId">商品のID</param>
         /// <returns>注文詳細エンティティ</returns>
-        OrderDetail GetOrderDetailById(int orderDetailId);
+        OrderDetail GetOrderDetailById(int orderId, int productId);
 
         /// <summary>
         /// 注文IDに基づいて注文詳細を取得します。

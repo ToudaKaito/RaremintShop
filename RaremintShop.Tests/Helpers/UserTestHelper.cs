@@ -29,10 +29,15 @@ namespace RaremintShop.Tests.Helpers
         /// <param name="userName">ユーザー名。</param>
         /// <param name="email">メールアドレス。</param>
         /// <param name="password">パスワード。</param>
-        /// <param name="createdAt">作成日時（オプション）。</param>
-        /// <param name="updatedAt">更新日時（オプション）。</param>
+        /// <param name="createdAt">作成日時</param>
+        /// <param name="updatedAt">更新日時</param>
         /// <returns>新しいユーザーオブジェクト。</returns>
-        public static User CreateTestUser(string userName = "TestUser", string email = "test@example.com", string password = "password123", DateTime? createdAt = null, DateTime? updatedAt = null)
+        public static User CreateTestUser(
+            string userName = "TestUser", 
+            string email = "test@example.com", 
+            string password = "password123", 
+            DateTime? createdAt = null, 
+            DateTime? updatedAt = null)
         {
             return new User(userName, email, password, createdAt, updatedAt);
         }

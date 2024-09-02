@@ -33,7 +33,14 @@ namespace RaremintShop.Tests.Helpers
         /// <param name="createdAt">作成日時</param>
         /// <param name="updatedAt">更新日時</param>
         /// <returns>新しいOrderオブジェクト</returns>
-        public static Order CreateTestOrder(int userId, User user, DateTime? orderDate = null, decimal totalAmount = 100.0m, string status = "Pending", DateTime? createdAt = null, DateTime? updatedAt = null)
+        public static Order CreateTestOrder(
+            int userId, 
+            User user, 
+            DateTime? orderDate = null, 
+            decimal totalAmount = 100.0m, 
+            string status = "Pending", 
+            DateTime? createdAt = null, 
+            DateTime? updatedAt = null)
         {
             return new Order(userId, user, orderDate, totalAmount, status, createdAt, updatedAt);
         }
