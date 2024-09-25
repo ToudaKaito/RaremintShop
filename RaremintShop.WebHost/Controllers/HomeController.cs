@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using RaremintShop.Models;
+using RaremintShop.WebHost.Models;
 using System.Diagnostics;
 
-namespace RaremintShop.Controllers
+namespace RaremintShop.WebHost.Controllers
 {
     public class HomeController : Controller
     {
