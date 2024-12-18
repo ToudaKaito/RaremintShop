@@ -1,0 +1,55 @@
+﻿@model RaremintShop.Module.Identity.Models.RegisterDto
+
+@{
+    ViewBag.Title = "新規登録";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">新規会員登録</h2>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form asp-action="Register" method="post" class="shadow p-4 rounded bg-light">
+                <!-- ユーザー名入力 -->
+                <div class="form-group mb-3">
+                    <label for="username">ユーザー名</label>
+                    <input type="text" class="form-control" id="username" name="username" value="@Model?.UserName" required />
+                </div>
+
+                <!-- メールアドレス入力 -->
+                <div class="form-group mb-3">
+                    <label for="email">メールアドレス</label>
+                    <input type="email" class="form-control" id="email" name="email" value="@Model?.Email" required />
+                </div>
+
+                <!-- パスワード入力 -->
+                <div class="form-group mb-3">
+                    <label for="password">パスワード</label>
+                    <input type="password" class="form-control" id="password" name="password" required />
+                </div>
+
+                <!-- パスワード確認入力 -->
+                <div class="form-group mb-4">
+                    <label for="confirmPassword">パスワード（確認）</label>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required />
+                </div>
+
+                <!-- エラーメッセージの表示 -->
+                @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                {
+                    <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+                }
+
+                <!-- 登録ボタン -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-block">登録</button>
+                </div>
+
+                <!-- ログインリンク -->
+                <div class="mt-3 text-center">
+                    <p>すでにアカウントをお持ちの方は <a asp-action="Login" class="text-primary">こちら</a> からログインできます。</p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

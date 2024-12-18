@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using RaremintShop.Infrastructure.Repositories;
 using RaremintShop.Module.Catalog.Repositories;
-using RaremintShop.Module.Core.Repositories;
+//using RaremintShop.Module.Core.Repositories;
 using RaremintShop.Module.Orders.Repositories;
 
 namespace RaremintShop.Infrastructure
@@ -22,7 +22,7 @@ namespace RaremintShop.Infrastructure
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
+            //services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
         }

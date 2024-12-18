@@ -22,6 +22,7 @@ builder.Services.AddInfrastructure();
 GlobalConfiguration.RegisterModule("Core", typeof(RaremintShop.Module.Core.ModuleInitializer).Assembly);
 GlobalConfiguration.RegisterModule("Orders", typeof(RaremintShop.Module.Orders.ModuleInitializer).Assembly);
 GlobalConfiguration.RegisterModule("Catalog", typeof(RaremintShop.Module.Catalog.ModuleInitializer).Assembly);
+GlobalConfiguration.RegisterModule("Identity", typeof(RaremintShop.Module.Identity.ModuleInitializer).Assembly);
 
 // --- 登録されたモジュールの初期化処理を動的に実行 ---
 /*
@@ -69,7 +70,8 @@ app.UseStaticFiles();
 // ルーティングを有効にするミドルウェア
 app.UseRouting();
 
-// 認証・認可ミドルウェアの追加（必要に応じて認証処理を行う）
+// 認証ミドルウェアを追加（必ず認可ミドルウェアの前に追加する必要があります）
+app.UseAuthentication();
 app.UseAuthorization();
 
 // デフォルトのルーティング設定
@@ -80,7 +82,7 @@ app.UseAuthorization();
  */
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Catalog}/{action=Index}/{id?}");
 
 // アプリケーションを実行
 app.Run();
