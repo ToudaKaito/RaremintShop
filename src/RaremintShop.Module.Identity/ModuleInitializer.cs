@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RaremintShop.Module.Core;
 using RaremintShop.Module.Identity.Data;
+using RaremintShop.Module.Identity.Extensions;
 
 namespace RaremintShop.Module.Identity
 {
@@ -25,7 +26,8 @@ namespace RaremintShop.Module.Identity
                 .AddEntityFrameworkStores<IdentityDbContext>()
                 .AddDefaultTokenProviders();
 
-
+            // Identityカスタムメソッドの呼び出し
+            services.AddCustomIdentity();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
