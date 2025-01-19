@@ -1,4 +1,4 @@
-﻿@model RaremintShop.Module.Identity.Models.RegisterDto
+﻿@model RaremintShop.Module.Identity.Models.UserRegisterViewModel
 
 @{
     ViewBag.Title = "新規登録";
@@ -10,35 +10,32 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <form asp-action="Register" method="post" class="shadow p-4 rounded bg-light">
-                <!-- ユーザー名入力 -->
-                <div class="form-group mb-3">
-                    <label for="username">ユーザー名</label>
-                    <input type="text" class="form-control" id="username" name="username" value="@Model?.UserName" required />
-                </div>
-
                 <!-- メールアドレス入力 -->
                 <div class="form-group mb-3">
                     <label for="email">メールアドレス</label>
                     <input type="email" class="form-control" id="email" name="email" value="@Model?.Email" required />
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
 
                 <!-- パスワード入力 -->
                 <div class="form-group mb-3">
                     <label for="password">パスワード</label>
                     <input type="password" class="form-control" id="password" name="password" required />
+                    <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
 
                 <!-- パスワード確認入力 -->
                 <div class="form-group mb-4">
                     <label for="confirmPassword">パスワード（確認）</label>
                     <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required />
+                    <span asp-validation-for="ComfirmPassword" class="text-danger"></span>
                 </div>
 
                 <!-- エラーメッセージの表示 -->
-                @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                @* @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
                 {
                     <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
-                }
+                } *@
 
                 <!-- 登録ボタン -->
                 <div class="text-center">

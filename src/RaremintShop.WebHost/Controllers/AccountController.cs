@@ -1,72 +1,52 @@
-﻿//using Microsoft.AspNetCore.Mvc;
-//using RaremintShop.Module.Core.DTOs;
-//using RaremintShop.Module.Identity.Services;
+﻿using Microsoft.AspNetCore.Mvc;
+using RaremintShop.Module.Identity.Models;
+using RaremintShop.Module.Identity.Services;
 
-//namespace RaremintShop.WebHost.Controllers
-//{
-//    public class AccountController : Controller
-//    {
-//        private readonly IUserService _userService;
+namespace RaremintShop.WebHost.Controllers
+{
+    public class AccountController : Controller
+    {
+        private readonly IUserService _userService;
 
-//        //public AccountController(IUserService userService)
-//        //{
-//        //    _userService = userService;
-//        //}
+        public AccountController(IUserService userService)
+        {
+            _userService = userService;
+        }
 
-//        // ログインページの表示
-//        [HttpGet]
-//        public IActionResult Login()
-//        {
-//            return View();
-//        }
+        // 新規会員登録ページの表示
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
 
-//        // ログインフォームからのPOST処理
-//        [HttpPost]
-//        public IActionResult Login(UserLoginDto loginDto)
-//        {
-//            if (!ModelState.IsValid)
-//            {
-//                return View(loginDto);
-//            }
+        // 新規会員登録フォームからのPOST処理
+        [HttpPost]
+        public async Task<IActionResult> Register(UserRegisterViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
 
-//            //var user = _userService.Login(loginDto.Email, loginDto.Password);
-//            //if (user != null)
-//            //{
-//            //    // ログイン成功: ホーム画面などにリダイレクト
-//            //    return RedirectToAction("Index", "Catalog");
-//            //}
+            // ユーザー登録処理を非同期で呼び出し
+            var result = await _userService.RegisterUserAsync(model);
 
-//            //// ログイン失敗時のエラーメッセージ
-//            //ModelState.AddModelError("", "メールアドレスまたはパスワードが間違っています");
-//            return View(loginDto);
-//        }
+            if (result.Succeeded)
+            {
+                // 登録成功: カタログページにリダイレクト
+                return RedirectToAction("Index", "Catalog");
+            }
+            else
+            {
+                // 登録失敗: エラーメッセージをModelStateに追加
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
 
-//        // 新規会員登録ページの表示
-//        [HttpGet]
-//        public IActionResult Register()
-//        {
-//            return View();
-//        }
-
-//        // 新規会員登録フォームからのPOST処理
-//        [HttpPost]
-//        public IActionResult Register(UserRegisterDto registerDto)
-//        {
-//            if (!ModelState.IsValid)
-//            {
-//                return View(registerDto);
-//            }
-
-//            //var result = _userService.Register(registerDto);
-//            //if (result)
-//            //{
-//            //    // 登録成功: カタログページにリダイレクト
-//            //    return RedirectToAction("Index", "Catalog");
-//            //}
-
-//            //// 登録失敗時のエラーメッセージ
-//            //ModelState.AddModelError("", "ユーザー登録に失敗しました。再度お試しください。");
-//            return View(registerDto);
-//        }
-//    }
-//}
+                return View(model);
+            }
+        }
+    }
+}

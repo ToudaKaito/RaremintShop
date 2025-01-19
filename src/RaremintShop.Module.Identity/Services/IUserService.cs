@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
+using RaremintShop.Module.Identity.Models;
 
 namespace RaremintShop.Module.Identity.Services
 {
     public interface IUserService
     {
-
+        Task<IdentityResult> RegisterUserAsync(UserRegisterViewModel model);
     }
 }
+

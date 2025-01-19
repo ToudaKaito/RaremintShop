@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RaremintShop.Module.Core;
 using RaremintShop.Module.Identity.Data;
 using RaremintShop.Module.Identity.Extensions;
+using RaremintShop.Module.Identity.Services;
 
 namespace RaremintShop.Module.Identity
 {
@@ -21,13 +21,11 @@ namespace RaremintShop.Module.Identity
                     new MySqlServerVersion(new Version(8, 0, 36))));
 
 
-            // Identityフレームワークの構成およびサービスの登録
-            services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<IdentityDbContext>()
-                .AddDefaultTokenProviders();
-
             // Identityカスタムメソッドの呼び出し
             services.AddCustomIdentity();
+
+            // UserServiceの登録
+            services.AddScoped<IUserService, UserService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
