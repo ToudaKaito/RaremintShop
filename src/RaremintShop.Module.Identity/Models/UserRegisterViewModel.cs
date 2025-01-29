@@ -14,6 +14,6 @@ namespace RaremintShop.Module.Identity.Models
 
         [Required(ErrorMessage = "確認用パスワードは必須です。")]
         [Compare("Password", ErrorMessage = "パスワードと確認用パスワードが一致しません。")]
-        public string ComfirmPassword { get; set; }
+        public string ConfirmPassword { get; set; }
     }
 }

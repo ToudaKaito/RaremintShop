@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RaremintShop.Module.Identity.Models;
 using RaremintShop.Module.Identity.Services;
+using System.Diagnostics;
 
 namespace RaremintShop.WebHost.Controllers
 {
@@ -24,8 +25,10 @@ namespace RaremintShop.WebHost.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(UserRegisterViewModel model)
         {
+            Console.WriteLine("Registerメソッドスタート");
             if (!ModelState.IsValid)
             {
+                Console.WriteLine("残念");
                 return View(model);
             }
 
@@ -34,11 +37,13 @@ namespace RaremintShop.WebHost.Controllers
 
             if (result.Succeeded)
             {
+                Console.WriteLine("成功");
                 // 登録成功: カタログページにリダイレクト
                 return RedirectToAction("Index", "Catalog");
             }
             else
             {
+                Console.WriteLine("失敗");
                 // 登録失敗: エラーメッセージをModelStateに追加
                 foreach (var error in result.Errors)
                 {
