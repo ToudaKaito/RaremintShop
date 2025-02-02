@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RaremintShop.Module.Identity.Models;
 using RaremintShop.Module.Identity.Services;
-using System.Diagnostics;
 
 namespace RaremintShop.WebHost.Controllers
 {
@@ -9,10 +8,12 @@ namespace RaremintShop.WebHost.Controllers
     {
         private readonly IUserService _userService;
 
+
         public AccountController(IUserService userService)
         {
             _userService = userService;
         }
+
 
         // 新規会員登録ページの表示
         [HttpGet]
@@ -20,6 +21,7 @@ namespace RaremintShop.WebHost.Controllers
         {
             return View();
         }
+
 
         // 新規会員登録フォームからのPOST処理
         [HttpPost]
@@ -52,6 +54,15 @@ namespace RaremintShop.WebHost.Controllers
 
                 return View(model);
             }
+        }
+
+
+        // 全てのユーザーを取得
+        [HttpGet]
+        public async Task<IActionResult> UsersList()
+        {
+            var users = await _userService.GetAllUsersAsync();
+            return View(users);
         }
     }
 }

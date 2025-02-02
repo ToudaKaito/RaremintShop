@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using RaremintShop.Module.Identity.Models;
 
 namespace RaremintShop.Module.Identity.Services
@@ -25,6 +26,18 @@ namespace RaremintShop.Module.Identity.Services
             var result = await _userManager.CreateAsync(user, model.Password);
 
             return result;
+        }
+
+        // 全ユーザー取得
+        public async Task<List<UsersListViewModel>> GetAllUsersAsync()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            return users.Select(user => new UsersListViewModel
+            {
+                Id = user.Id,
+                Email = user.Email,
+                UserName = user.UserName
+            }).ToList();
         }
 
     }
