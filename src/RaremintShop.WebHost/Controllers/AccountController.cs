@@ -25,6 +25,7 @@ namespace RaremintShop.WebHost.Controllers
 
         // 新規会員登録フォームからのPOST処理
         [HttpPost]
+        [ValidateAntiForgeryToken] // CSRFトークンの検証
         public async Task<IActionResult> Register(UserRegisterViewModel model)
         {
             Console.WriteLine("Registerメソッドスタート");
@@ -56,6 +57,13 @@ namespace RaremintShop.WebHost.Controllers
             }
         }
 
+
+        // ログインページの表示
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
 
         // 全てのユーザーを取得
         [HttpGet]

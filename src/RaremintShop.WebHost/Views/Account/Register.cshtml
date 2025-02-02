@@ -10,6 +10,8 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <form asp-action="Register" method="post" class="shadow p-4 rounded bg-light">
+                @Html.AntiForgeryToken() <!-- CSRFトークン -->
+
                 <!-- DBエラー(全体エラーのみ) -->
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
