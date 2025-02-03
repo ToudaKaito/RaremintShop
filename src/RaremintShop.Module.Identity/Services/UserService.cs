@@ -7,11 +7,13 @@ namespace RaremintShop.Module.Identity.Services
     public class UserService : IUserService
     {
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
 
         // コンストラクタで UserManager を注入
-        public UserService(UserManager<IdentityUser> userManager)
+        public UserService(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
         }
 
         // ユーザーの登録
@@ -26,6 +28,26 @@ namespace RaremintShop.Module.Identity.Services
             var result = await _userManager.CreateAsync(user, model.Password);
 
             return result;
+        }
+
+        // ログイン
+        public async Task<SignInResult> LoginAsync(UserLoginViewModel model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if(user == null)
+            {
+                return SignInResult.Failed; // ユーザーが存在しない
+            }
+
+            var result = await _signInManager.PasswordSignInAsync(user, model.Password,false,false);
+
+            return result;
+        }
+
+        // ログアウト
+        public async Task LogoutAsync()
+        {
+            await _signInManager.SignOutAsync();
         }
 
         // 全ユーザー取得

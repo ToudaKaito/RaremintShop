@@ -58,18 +58,30 @@
 
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <ul class="navbar-nav ml-auto">
-                        <!-- ログインリンク -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="@Url.Action("Login", "Account")">ログイン</a>
-                        </li>
-                        <!-- 新規登録リンク -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="@Url.Action("Register", "Account")">新規登録</a>
-                        </li>
-                        <!-- ユーザーリストリンク -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="@Url.Action("UsersList", "Account")">ユーザー一覧</a>
-                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <span class="nav-link">ようこそ, @User.Identity.Name さん</span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Logout", "Account")">ログアウト</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <!-- ログインリンク -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Login", "Account")">ログイン</a>
+                            </li>
+                            <!-- 新規登録リンク -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Register", "Account")">新規登録</a>
+                            </li>
+                            <!-- ユーザーリストリンク -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("UsersList", "Account")">ユーザー一覧</a>
+                            </li>
+                        }                  
                     </ul>
                 </div>
             </div>

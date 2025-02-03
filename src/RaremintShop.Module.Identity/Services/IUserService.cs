@@ -7,6 +7,10 @@ namespace RaremintShop.Module.Identity.Services
     {
         Task<IdentityResult> RegisterUserAsync(UserRegisterViewModel model);
 
+        Task<SignInResult> LoginAsync(UserLoginViewModel model);
+
+        Task LogoutAsync();
+
         Task<List<UsersListViewModel>> GetAllUsersAsync();
     }
 }

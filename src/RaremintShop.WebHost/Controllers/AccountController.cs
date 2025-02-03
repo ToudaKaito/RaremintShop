@@ -19,7 +19,7 @@ namespace RaremintShop.WebHost.Controllers
         [HttpGet]
         public IActionResult Register()
         {
-            return View();
+            return View(new UserRegisterViewModel());
         }
 
 
@@ -28,10 +28,8 @@ namespace RaremintShop.WebHost.Controllers
         [ValidateAntiForgeryToken] // CSRFトークンの検証
         public async Task<IActionResult> Register(UserRegisterViewModel model)
         {
-            Console.WriteLine("Registerメソッドスタート");
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("残念");
                 return View(model);
             }
 
@@ -40,13 +38,11 @@ namespace RaremintShop.WebHost.Controllers
 
             if (result.Succeeded)
             {
-                Console.WriteLine("成功");
                 // 登録成功: カタログページにリダイレクト
                 return RedirectToAction("Index", "Catalog");
             }
             else
             {
-                Console.WriteLine("失敗");
                 // 登録失敗: エラーメッセージをModelStateに追加
                 foreach (var error in result.Errors)
                 {
@@ -62,7 +58,42 @@ namespace RaremintShop.WebHost.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            return View();
+            return View(new UserLoginViewModel());
+        }
+
+        // ログイン処理
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(UserLoginViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var result = await _userService.LoginAsync(model);
+
+            if (result.Succeeded)
+            {
+                // 登録成功: カタログページにリダイレクト
+                return RedirectToAction("Index", "Catalog");
+            }
+            else
+            {
+                // 登録失敗: エラーメッセージをModelStateに追加
+                ModelState.AddModelError(string.Empty, "メールアドレスまたはパスワードが正しくありません。");
+
+                return View(model);
+            }
+        }
+
+        // ログアウト処理
+        [HttpGet]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await _userService.LogoutAsync();
+            return RedirectToAction("Index", "Catalog");
         }
 
         // 全てのユーザーを取得

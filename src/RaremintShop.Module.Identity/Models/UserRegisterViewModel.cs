@@ -9,6 +9,7 @@ namespace RaremintShop.Module.Identity.Models
         public string Email { get; set; }
 
         [Required(ErrorMessage = "パスワードは必須です。")]
+        [DataType(DataType.Password)]
         [StringLength(100, ErrorMessage = "パスワードは少なくとも{2}文字以上である必要があります。", MinimumLength = 8)]
         public string Password { get; set; }
 
