@@ -88,7 +88,7 @@ namespace RaremintShop.WebHost.Controllers
         }
 
         // ログアウト処理
-        [HttpGet]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
