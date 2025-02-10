@@ -56,11 +56,22 @@ namespace RaremintShop.Module.Identity.Services
             var users = await _userManager.Users.ToListAsync();
             return users.Select(user => new UsersListViewModel
             {
-                Id = user.Id,
+                UserName = user.UserName,
                 Email = user.Email,
-                UserName = user.UserName
+                Roles = GetRolesAsync(user).Result
             }).ToList();
         }
 
+        // メールアドレスからユーザーを取得
+        public async Task<IdentityUser> GetByEmailAsync(string email)
+        {
+            return await _userManager.FindByEmailAsync(email);
+        }
+
+        // ユーザーのロールを取得
+        public async Task<IList<string>> GetRolesAsync(IdentityUser user)
+        {
+            return await _userManager.GetRolesAsync(user);
+        }
     }
 }

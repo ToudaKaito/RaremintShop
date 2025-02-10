@@ -1,0 +1,37 @@
+﻿@model List<RaremintShop.Module.Identity.Models.UsersListViewModel>
+
+
+@{
+    ViewBag.Title = "UsersList";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center mb-5">ユーザー管理</h1>
+
+    <!-- ユーザー一覧をテーブルで表示 -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ユーザー名</th>
+                <th>Email</th>
+                <th>ロール</th>
+                <th>アクション</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>@user.Email</td>
+                    <td>@string.Join(", ", user.Roles)</td>  <!-- ここでリストをカンマ区切りで表示 -->
+                    <td>
+                        <!-- 編集や削除のリンク -->
+                        <a href="#" class="btn btn-warning btn-sm">編集</a>
+                        <a href="#" class="btn btn-danger btn-sm">削除</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

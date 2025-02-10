@@ -8,12 +8,11 @@ namespace RaremintShop.WebHost.Controllers
     {
         private readonly IUserService _userService;
 
-
+        // コンストラクタ
         public AccountController(IUserService userService)
         {
             _userService = userService;
         }
-
 
         // 新規会員登録ページの表示
         [HttpGet]
@@ -21,7 +20,6 @@ namespace RaremintShop.WebHost.Controllers
         {
             return View(new UserRegisterViewModel());
         }
-
 
         // 新規会員登録フォームからのPOST処理
         [HttpPost]
@@ -53,7 +51,6 @@ namespace RaremintShop.WebHost.Controllers
             }
         }
 
-
         // ログインページの表示
         [HttpGet]
         public IActionResult Login()
@@ -75,8 +72,17 @@ namespace RaremintShop.WebHost.Controllers
 
             if (result.Succeeded)
             {
-                // 登録成功: カタログページにリダイレクト
-                return RedirectToAction("Index", "Catalog");
+                var user = await _userService.GetByEmailAsync(model.Email);
+                var roles = await _userService.GetRolesAsync(user);
+
+                if (roles.Contains("Admin"))
+                {
+                    return RedirectToAction("DashBoard", "Admin");
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Catalog");
+                }
             }
             else
             {
@@ -103,5 +109,6 @@ namespace RaremintShop.WebHost.Controllers
             var users = await _userService.GetAllUsersAsync();
             return View(users);
         }
+
     }
 }

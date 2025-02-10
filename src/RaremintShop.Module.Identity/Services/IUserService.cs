@@ -12,6 +12,10 @@ namespace RaremintShop.Module.Identity.Services
         Task LogoutAsync();
 
         Task<List<UsersListViewModel>> GetAllUsersAsync();
+
+        Task<IdentityUser> GetByEmailAsync(string email);
+
+        Task<IList<string>> GetRolesAsync(IdentityUser user);
     }
 }
 
