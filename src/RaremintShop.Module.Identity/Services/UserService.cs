@@ -11,7 +11,7 @@ namespace RaremintShop.Module.Identity.Services
         private readonly RoleManager<IdentityRole> _roleManager;
 
         // コンストラクタで UserManager を注入
-        public UserService(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, RoleManager roleManager)
+        public UserService(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));

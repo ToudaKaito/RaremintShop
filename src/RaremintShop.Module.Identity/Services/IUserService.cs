@@ -12,7 +12,7 @@ namespace RaremintShop.Module.Identity.Services
         Task<IdentityUser> GetByEmailAsync(string email);
         Task<IdentityUser> GetByIdAsync(string id);
         Task<UserEditViewModel> GetByIdForEditAsync(string id);
-        Task<IList<string>> GetRolesAsync(IdentityUser user);
+        Task<string> GetRolesAsync(IdentityUser user);
         Task<IdentityResult> DeleteUserAsync(IdentityUser user);
         Task<List<IdentityRole>> GetAllRolesAsync();
         Task<IdentityResult> UpdateUserAsync(UserEditViewModel model);
