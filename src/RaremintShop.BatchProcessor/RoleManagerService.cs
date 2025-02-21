@@ -26,24 +26,12 @@ namespace RaremintShop.BatchProcessor
         // ロールの初期化
         public async Task CreateRoleAsync()
         {
-            // ロールの初期化
             foreach (var roleName in roleNames)
             {
                 if (await _roleManager.FindByNameAsync(roleName) == null)
                 {
                     await _roleManager.CreateAsync(new IdentityRole(roleName));
                 }
-            }
-            // 管理者の初期化
-            if (await _userManager.FindByEmailAsync(ADMIN_ADDRESS) == null)
-            {
-                var user = new IdentityUser
-                {
-                    UserName = ADMIN_ADDRESS,
-                    Email = ADMIN_ADDRESS
-                };
-                await _userManager.CreateAsync(user, ADMIN_PASSWORD);
-                await _userManager.AddToRoleAsync(user, "Admin");
             }
         }
 
@@ -53,14 +41,22 @@ namespace RaremintShop.BatchProcessor
             var users = _userManager.Users.ToList();
             foreach (var user in users)
             {
-                if (user.Email == ADMIN_ADDRESS)
+                var currentRoles = await _userManager.GetRolesAsync(user);
+
+                // 現在のロールをすべて削除
+                if (currentRoles.Any())
+                {
+                    await _userManager.RemoveFromRolesAsync(user, currentRoles);
+                }
+
+                if (user.Email == ADMIN_ADDRESS) // 管理者
                 {
                     if (!await _userManager.IsInRoleAsync(user, roleNames[0]))
                     {
                         await _userManager.AddToRoleAsync(user, roleNames[0]);
                     }
                 }
-                else
+                else // 一般ユーザー
                 {
                     if (!await _userManager.IsInRoleAsync(user, roleNames[1]))
                     {

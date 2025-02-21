@@ -101,14 +101,6 @@ namespace RaremintShop.WebHost.Controllers
             await _userService.LogoutAsync();
             return RedirectToAction("Index", "Catalog");
         }
-
-        // 全てのユーザーを取得
-        [HttpGet]
-        public async Task<IActionResult> UsersList()
-        {
-            var users = await _userService.GetAllUsersAsync();
-            return View(users);
-        }
-
+        
     }
 }

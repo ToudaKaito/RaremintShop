@@ -2,7 +2,7 @@
 
 
 @{
-    ViewBag.Title = "UsersList";
+    ViewBag.Title = "UserManagement";
 }
 
 <div class="container mt-5">
@@ -24,11 +24,13 @@
                 <tr>
                     <td>@user.UserName</td>
                     <td>@user.Email</td>
-                    <td>@string.Join(", ", user.Roles)</td>  <!-- ここでリストをカンマ区切りで表示 -->
+                    <td>@user.Role</td>
                     <td>
-                        <!-- 編集や削除のリンク -->
-                        <a href="#" class="btn btn-warning btn-sm">編集</a>
-                        <a href="#" class="btn btn-danger btn-sm">削除</a>
+                        <a asp-action="Edit" asp-controller="Admin" asp-route-id="@user.Id" class="btn btn-warning btn-sm">編集</a>
+                        <form asp-action="Delete" asp-controller="Admin" asp-route-id="@user.Id" method="post" style="display:inline;">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('本当に削除しますか？');">削除</button>
+                        </form>
                     </td>
                 </tr>
             }
