@@ -90,14 +90,15 @@ namespace RaremintShop.Module.Identity.Services
         public async Task<UserEditViewModel> GetByIdForEditAsync(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
-            var roles = await _userManager.GetRolesAsync(user);
-            var role = roles.FirstOrDefault();
+            var roles = await GetAllRolesAsync(); // await を追加してタスクを完了させる
+            var role = roles.FirstOrDefault()?.Name; // 役割名を取得
             var model = new UserEditViewModel
             {
                 Id = user.Id,
+                UserName = user.UserName,
                 Email = user.Email,
                 Role = role,
-                AvailableRoles = roles.ToList(), // 明示的な変換を追加
+                AvailableRoles = roles.Select(r => r.Name).ToList(), // 役割名のリストに変換
                 IsActive = user.LockoutEnd == null
             };
             return model;

@@ -101,6 +101,5 @@ namespace RaremintShop.WebHost.Controllers
             await _userService.LogoutAsync();
             return RedirectToAction("Index", "Catalog");
         }
-        
     }
 }
