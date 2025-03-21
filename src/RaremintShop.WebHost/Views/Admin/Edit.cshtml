@@ -1,62 +1,42 @@
 ﻿@model RaremintShop.Module.Identity.Models.UserEditViewModel
 
 @{
-<<<<<<< HEAD
     ViewBag.Title = "ユーザー編集";
 }
 
-<h2>ユーザー編集</h2>
-=======
-    ViewBag.Title = "Edit User";
-}
-
 <h2>Edit User</h2>
->>>>>>> d4707bf1d5c41df3c00e04f20dbe6bdff7013462
 
 <form asp-controller="Admin" asp-action="Edit" method="post">
     @Html.AntiForgeryToken() <!-- CSRFトークン -->
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-<<<<<<< HEAD
 
     <!-- メールアドレス入力 -->
-=======
->>>>>>> d4707bf1d5c41df3c00e04f20dbe6bdff7013462
     <div class="form-group">
         <label asp-for="Email" class="control-label"></label>
         <input asp-for="Email" class="form-control" />
         <span asp-validation-for="Email" class="text-danger"></span>
     </div>
-<<<<<<< HEAD
 
     <!-- ユーザー名入力 -->
-=======
->>>>>>> d4707bf1d5c41df3c00e04f20dbe6bdff7013462
     <div class="form-group">
         <label asp-for="UserName" class="control-label"></label>
         <input asp-for="UserName" class="form-control" />
         <span asp-validation-for="UserName" class="text-danger"></span>
     </div>
-<<<<<<< HEAD
 
     <!-- ロール選択 -->
-=======
->>>>>>> d4707bf1d5c41df3c00e04f20dbe6bdff7013462
     <div class="form-group">
         <label asp-for="Role" class="control-label"></label>
         <select asp-for="Role" class="form-control" asp-items="@(new SelectList(Model.AvailableRoles))"></select>
         <span asp-validation-for="Role" class="text-danger"></span>
     </div>
-<<<<<<< HEAD
 
     <!-- アクティブ状態選択 -->
-=======
->>>>>>> d4707bf1d5c41df3c00e04f20dbe6bdff7013462
     <div class="form-group">
         <label asp-for="IsActive" class="control-label"></label>
         <input asp-for="IsActive" type="checkbox" />
         <span asp-validation-for="IsActive" class="text-danger"></span>
     </div>
-<<<<<<< HEAD
 
     <!-- 保存ボタン -->
     <div class="form-group">
@@ -65,15 +45,8 @@
 </form>
 
 <!-- 戻るリンク -->
-<div>
-    <a asp-action="UserManagement">一覧に戻る</a>
-=======
-    <div class="form-group">
-        <input type="submit" value="Save" class="btn btn-primary" />
-    </div>
-</form>
-
-<div>
-    <a asp-action="UserManagement">Back To List</a>
->>>>>>> d4707bf1d5c41df3c00e04f20dbe6bdff7013462
+<a asp-action="UserManagement">一覧に戻る</a>
+<div class="form-group">
+    <input type="submit" value="Save" class="btn btn-primary" />
 </div>
+
