@@ -107,11 +107,46 @@ namespace RaremintShop.Module.Identity.Services
             {
                 await _signInManager.SignOutAsync();
             }
+<<<<<<< HEAD
             catch (Exception ex)
             {
                 _logger.LogError(ex, "ユーザーログアウト中にエラーが発生しました。");
                 throw;
             }
+=======
+
+            return usersList;
+        }
+
+        // メールアドレスからユーザーを取得
+        public async Task<IdentityUser> GetByEmailAsync(string email)
+        {
+            return await _userManager.FindByEmailAsync(email);
+        }
+
+        // ID からユーザーを取得
+        public async Task<IdentityUser> GetByIdAsync(string id)
+        {
+            return await _userManager.FindByIdAsync(id);
+        }
+
+        // IDからユーザーを取得(Edit用)
+        public async Task<UserEditViewModel> GetByIdForEditAsync(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            var roles = await GetAllRolesAsync(); // await を追加してタスクを完了させる
+            var role = roles.FirstOrDefault()?.Name; // 役割名を取得
+            var model = new UserEditViewModel
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                Role = role,
+                AvailableRoles = roles.Select(r => r.Name).ToList(), // 役割名のリストに変換
+                IsActive = user.LockoutEnd == null
+            };
+            return model;
+>>>>>>> d4707bf1d5c41df3c00e04f20dbe6bdff7013462
         }
 
 

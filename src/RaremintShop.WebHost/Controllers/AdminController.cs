@@ -2,7 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using RaremintShop.Module.Identity.Models;
 using RaremintShop.Module.Identity.Services;
+<<<<<<< HEAD
 using static RaremintShop.Shared.Constants;
+=======
+using System.Diagnostics;
+>>>>>>> d4707bf1d5c41df3c00e04f20dbe6bdff7013462
 
 namespace RaremintShop.WebHost.Controllers
 {
@@ -94,18 +98,37 @@ namespace RaremintShop.WebHost.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(UserEditViewModel model)
         {
+            Console.WriteLine("Edit");
             if (!ModelState.IsValid)
             {
+                Console.WriteLine("バリデーション失敗");
+
+                // ModelState のエラーメッセージをコンソールに出力
+                foreach (var state in ModelState)
+                {
+                    foreach (var error in state.Value.Errors)
+                    {
+                        Console.WriteLine($"キー: {state.Key}, エラーメッセージ: {error.ErrorMessage}");
+                    }
+                }
+
                 var roles = await _userService.GetAllRolesAsync();
+<<<<<<< HEAD
                 model.AvailableRoles = roles.Select(x => x.Name!).ToList();
                 return View(model);
+=======
+                model.AvailableRoles = roles.Select(x => x.Name).ToList();
+                return View(model); // エラーメッセージを表示するためにビューを再表示
+>>>>>>> d4707bf1d5c41df3c00e04f20dbe6bdff7013462
             }
 
             try
             {
+                Console.WriteLine("try");
                 var result = await _userService.UpdateUserAsync(model);
                 if (result.Succeeded)
                 {
+<<<<<<< HEAD
                     return RedirectToAction(RedirectPaths.AdminUserManagement, RedirectPaths.AdminController);
                 }
                 else
@@ -113,10 +136,21 @@ namespace RaremintShop.WebHost.Controllers
                     // エラーメッセージを表示
                     ModelState.AddModelError(string.Empty, "ユーザー情報の更新中にエラーが発生しました。");
                     return View(model);
+=======
+                    Console.WriteLine("成功");
+                    return RedirectToAction("UserManagement");
+>>>>>>> d4707bf1d5c41df3c00e04f20dbe6bdff7013462
+                }
+                else
+                {
+                    Console.WriteLine("失敗");
+                    // 更新が失敗した場合のエラーメッセージを追加
+                    ModelState.AddModelError(string.Empty, "ユーザーの更新に失敗しました。");
                 }
             }
             catch (Exception ex)
             {
+<<<<<<< HEAD
                 // ログの記録
                 _logger.LogError(ex, "ユーザー情報の更新中にエラーが発生しました。");
 
@@ -124,6 +158,17 @@ namespace RaremintShop.WebHost.Controllers
                 ModelState.AddModelError(string.Empty, "予期しないエラーが発生しました。");
                 return View(model);
             }
+=======
+                Console.WriteLine("ERROR");
+                // 例外が発生した場合のエラーメッセージを追加
+                ModelState.AddModelError(string.Empty, $"エラーが発生しました: {ex.Message}");
+            }
+
+            // 失敗した場合、AvailableRolesを再設定してビューを再表示
+            var allRoles = await _userService.GetAllRolesAsync();
+            model.AvailableRoles = allRoles.Select(x => x.Name).ToList();
+            return View(model);
+>>>>>>> d4707bf1d5c41df3c00e04f20dbe6bdff7013462
         }
 
 
