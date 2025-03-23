@@ -31,7 +31,7 @@ namespace RaremintShop.Shared
     /// </summary>
     public class ModuleInfo
     {
-        public string Name { get; set; }
-        public Assembly Assembly { get; set; }
+        public required string Name { get; set; }
+        public required Assembly Assembly { get; set; }
     }
 }

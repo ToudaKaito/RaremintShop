@@ -39,7 +39,7 @@ namespace RaremintShop.Module.Identity.Extensions
             .AddDefaultTokenProviders();
 
             // Cookieおよびセッションの設定
-            services.ConfigureApplicationCookie(options =>
+            _ = services.ConfigureApplicationCookie(options =>
             {
                 // ログイン後のセッションのタイムアウトとセキュリティ設定
                 options.Cookie.HttpOnly = true;
@@ -54,7 +54,29 @@ namespace RaremintShop.Module.Identity.Extensions
                 options.Events.OnValidatePrincipal = async context =>
                 {
                     var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<IdentityUser>>();
-                    var user = await userManager.GetUserAsync(context.Principal);
+                    var user = await userManager.GetUserAsync(context.Principal!); // Add null-forgiving operator
+                    if (user != null)
+                    {
+                        var isAdmin = await userManager.IsInRoleAsync(user, "Admin");
+
+                        if (isAdmin)
+                        {
+                            // 管理者のセッション設定
+                            options.ExpireTimeSpan = TimeSpan.FromMinutes(15);
+                            options.SlidingExpiration = false;
+                        }
+                        else
+                        {
+                            // ユーザーのセッション設定
+                            options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                            options.SlidingExpiration = true;
+                        }
+                    }
+                };
+                options.Events.OnValidatePrincipal = async context =>
+                {
+                    var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<IdentityUser>>();
+                    var user = await userManager.GetUserAsync(context.Principal!); // Add null-forgiving operator
                     var isAdmin = await userManager.IsInRoleAsync(user, "Admin");
 
                     if (isAdmin)
