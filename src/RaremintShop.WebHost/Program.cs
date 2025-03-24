@@ -16,7 +16,7 @@ builder.Services.AddInfrastructure();
 // --- モジュールの登録処理 ---
 /*
  * GlobalConfigurationを使用して各モジュールをアプリケーションに登録。
- * ここでは、Core、Orders、Catalogの各モジュールを登録している。
+ * ここでは、Core、Orders、Catalog、Identityの各モジュールを登録している。
  * モジュールはそれぞれ固有の初期化処理を持つことができる。
  */
 GlobalConfiguration.RegisterModule("Core", typeof(RaremintShop.Module.Core.ModuleInitializer).Assembly);
@@ -44,7 +44,6 @@ foreach (var module in GlobalConfiguration.Modules)
         moduleInitializer.ConfigureServices(builder.Services, builder.Configuration);
     }
 }
-
 
 var app = builder.Build();
 
