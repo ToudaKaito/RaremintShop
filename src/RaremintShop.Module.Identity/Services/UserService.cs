@@ -48,7 +48,7 @@ namespace RaremintShop.Module.Identity.Services
         /// <exception cref="ArgumentNullException">モデルがnullの場合にスローされます</exception>
         public async Task<IdentityResult> RegisterUserAsync(UserRegisterViewModel model)
         {
-            ArgumentNullException.ThrowIfNull(model);
+            ArgumentNullException.ThrowIfNull(model); // nullの場合は例外をスロー
 
             try
             {
@@ -77,7 +77,7 @@ namespace RaremintShop.Module.Identity.Services
         /// <exception cref="ArgumentNullException">モデルがnullの場合にスローされます</exception>
         public async Task<SignInResult> LoginAsync(UserLoginViewModel model)
         {
-            ArgumentNullException.ThrowIfNull(model);
+            ArgumentNullException.ThrowIfNull(model); // nullの場合は例外をスロー
 
             try
             {
@@ -122,7 +122,7 @@ namespace RaremintShop.Module.Identity.Services
         /// <returns>ユーザー削除の結果を表すIdentityResult</returns>
         public async Task<IdentityResult> DeleteUserAsync(IdentityUser user)
         {
-            ArgumentNullException.ThrowIfNull(user);
+            ArgumentNullException.ThrowIfNull(user); // nullの場合は例外をスロー
 
             try
             {
@@ -144,21 +144,36 @@ namespace RaremintShop.Module.Identity.Services
         /// <exception cref="ArgumentNullException">モデルがnullの場合にスローされます</exception>
         public async Task<IdentityResult> UpdateUserAsync(UserEditViewModel model)
         {
-            ArgumentNullException.ThrowIfNull(model);
+            ArgumentNullException.ThrowIfNull(model); // nullの場合は例外をスロー
 
             try
             {
                 var user = await _userManager.FindByIdAsync(model.Id);
-                user.Email = model.Email;
-                user.UserName = model.Email;
+                if (user == null)
+                {
+                    throw new InvalidOperationException("ユーザーが見つかりません。");
+                }
+
+                user.Email = model.Email ?? throw new ArgumentNullException(nameof(model.Email));
+                user.UserName = model.Email ?? throw new ArgumentNullException(nameof(model.Email));
 
                 // アカウントの有効・無効を設定
                 user.LockoutEnd = model.IsActive ? null : DateTimeOffset.MaxValue;
 
                 // 既存のロールを削除し、新しいロールを設定
                 var currentRoles = await _userManager.GetRolesAsync(user);
-                await _userManager.RemoveFromRolesAsync(user, currentRoles);
-                await _userManager.AddToRolesAsync(user, new List<string> { model.Role });
+
+                var removeRolesResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
+                if (!removeRolesResult.Succeeded) // 削除に失敗した場合
+                {
+                    return removeRolesResult;
+                }
+
+                var addRolesResult = await _userManager.AddToRoleAsync(user, model.Role);
+                if (!addRolesResult.Succeeded) // 追加に失敗した場合
+                {
+                    return addRolesResult;
+                }
 
                 // ユーザー情報を更新
                 return await _userManager.UpdateAsync(user);
@@ -189,9 +204,9 @@ namespace RaremintShop.Module.Identity.Services
                     usersList.Add(new UserManagementViewModel
                     {
                         Id = user.Id,
-                        UserName = user.UserName,
-                        Email = user.Email,
-                        Role = role
+                        UserName = user.UserName ?? string.Empty, // Null 参照代入の可能性を回避
+                        Email = user.Email ?? string.Empty,       // Null 参照代入の可能性を回避
+                        Role = role ?? string.Empty               // Null 参照代入の可能性を回避
                     });
                 }
 
@@ -254,7 +269,7 @@ namespace RaremintShop.Module.Identity.Services
         /// <returns>ユーザー編集のためのモデル</returns>
         public async Task<UserEditViewModel> GetByIdForEditAsync(string id)
         {
-            ArgumentNullException.ThrowIfNull(id);
+            ArgumentNullException.ThrowIfNull(id); // nullの場合は例外をスロー
 
             try
             {
@@ -286,7 +301,7 @@ namespace RaremintShop.Module.Identity.Services
         /// <returns>ユーザーのロールのリスト</returns>
         public async Task<IList<string>> GetRolesAsync(IdentityUser user)
         {
-            ArgumentNullException.ThrowIfNull(user);
+            ArgumentNullException.ThrowIfNull(user); // nullの場合は例外をスロー
 
             try
             {
