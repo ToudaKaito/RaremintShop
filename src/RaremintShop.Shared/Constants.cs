@@ -6,6 +6,13 @@
         {
             public const string UnexpectedError = "予期しないエラーが発生しました。";
             public const string InvalidLogin = "メールアドレスまたはパスワードが正しくありません。";
+            public const string UserNotFound = "ユーザーが見つかりません。";
+            public const string UserFetchError = "ユーザー情報の取得中にエラーが発生しました。";
+            public const string UserUpdateError = "ユーザー情報の更新中にエラーが発生しました。";
+            public const string UserDeleteError = "ユーザー削除中にエラーが発生しました。";
+            public const string UserRegisterError = "ユーザー登録中にエラーが発生しました。";
+            public const string UserLoginError = "ユーザーログイン中にエラーが発生しました。";
+            public const string UserLogoutError = "ユーザーログアウト中にエラーが発生しました。";
         }
 
         public static class  Roles

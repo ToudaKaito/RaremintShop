@@ -52,8 +52,8 @@ namespace RaremintShop.WebHost.Controllers
             catch (Exception ex)
             {
                 // エラーメッセージを表示
-                _logger.LogError(ex, "ユーザー情報の取得中にエラーが発生しました。");
-                ModelState.AddModelError(string.Empty, "ユーザー情報の取得中にエラーが発生しました。");
+                _logger.LogError(ex, ErrorMessages.UserFetchError);
+                ModelState.AddModelError(string.Empty, ErrorMessages.UserFetchError);
                 return View(new List<UserManagementViewModel>());
             }
         }
@@ -78,8 +78,8 @@ namespace RaremintShop.WebHost.Controllers
             catch (Exception ex)
             {
                 // エラーメッセージを表示
-                _logger.LogError(ex, "ユーザー情報の取得中にエラーが発生しました。");
-                ModelState.AddModelError(string.Empty, "ユーザー情報の取得中にエラーが発生しました。");
+                _logger.LogError(ex, ErrorMessages.UserFetchError);
+                ModelState.AddModelError(string.Empty, ErrorMessages.UserFetchError);
                 return RedirectToAction(RedirectPaths.AdminUserManagement, RedirectPaths.AdminController);
             }
         }
@@ -95,11 +95,8 @@ namespace RaremintShop.WebHost.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(UserEditViewModel model)
         {
-            Console.WriteLine("Edit");
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("バリデーション失敗");
-
                 // ModelState のエラーメッセージをコンソールに出力
                 foreach (var state in ModelState)
                 {
@@ -116,7 +113,6 @@ namespace RaremintShop.WebHost.Controllers
 
             try
             {
-                Console.WriteLine("try");
                 var result = await _userService.UpdateUserAsync(model);
                 if (result.Succeeded)
                 {
@@ -125,20 +121,16 @@ namespace RaremintShop.WebHost.Controllers
                 else
                 {
                     // エラーメッセージを表示
-                    ModelState.AddModelError(string.Empty, "ユーザー情報の更新中にエラーが発生しました。");
+                    ModelState.AddModelError(string.Empty, ErrorMessages.UserUpdateError);
                     return View(model);
                 }
             }
             catch (Exception ex)
             {
-                // ログの記録
-                _logger.LogError(ex, "ユーザー情報の更新中にエラーが発生しました。");
-
-                // エラーメッセージの表示
-                ModelState.AddModelError(string.Empty, "予期しないエラーが発生しました。");
+                _logger.LogError(ex, ErrorMessages.UserUpdateError);
+                ModelState.AddModelError(string.Empty, ErrorMessages.UserUpdateError);
                 return View(model);
             }
-
         }
 
 
@@ -163,12 +155,9 @@ namespace RaremintShop.WebHost.Controllers
             }
             catch (Exception ex)
             {
-                // ログの記録
-                _logger.LogError(ex, "ユーザー削除中にエラーが発生しました。");
-
-                // エラーメッセージの表示
-                ModelState.AddModelError(string.Empty, "ユーザー削除中にエラーが発生しました。");
-                return RedirectToAction("UserManagement");
+                _logger.LogError(ex, ErrorMessages.UserDeleteError);
+                ModelState.AddModelError(string.Empty, ErrorMessages.UserDeleteError);
+                return RedirectToAction(RedirectPaths.AdminUserManagement, RedirectPaths.AdminController);
             }
         }
     }

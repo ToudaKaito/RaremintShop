@@ -76,8 +76,8 @@ namespace RaremintShop.WebHost.Controllers
             catch (Exception ex)
             {
                 // 例外が発生した場合の処理
-                _logger.LogError(ex, "ユーザー登録中にエラーが発生しました。");
-                ModelState.AddModelError(string.Empty, ErrorMessages.UnexpectedError);
+                _logger.LogError(ex, ErrorMessages.UserRegisterError);
+                ModelState.AddModelError(string.Empty, ErrorMessages.UserRegisterError);
                 return View(model);
             }
         }
@@ -118,6 +118,12 @@ namespace RaremintShop.WebHost.Controllers
                 if (result.Succeeded) // ログイン成功:ロールによってリダイレクト先を変更
                 {
                     var user = await _userService.GetByEmailAsync(model.Email);
+                    if (user == null) // 基本的にはありえないが、念のためのチェック
+                    {
+                        ModelState.AddModelError(string.Empty, ErrorMessages.UserNotFound);
+                        return View(model);
+                    }
+
                     var roles = await _userService.GetRolesAsync(user);
 
                     if (roles.Contains(Roles.Admin))
@@ -138,8 +144,8 @@ namespace RaremintShop.WebHost.Controllers
             catch (Exception ex)
             {
                 // 例外が発生した場合の処理
-                _logger.LogError(ex, "ユーザーログイン中にエラーが発生しました。");
-                ModelState.AddModelError(string.Empty, ErrorMessages.UnexpectedError);
+                _logger.LogError(ex, ErrorMessages.UserLoginError);
+                ModelState.AddModelError(string.Empty, ErrorMessages.UserLoginError);
                 return View(model);
             }
         }
@@ -160,8 +166,8 @@ namespace RaremintShop.WebHost.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "ユーザーログアウト中にエラーが発生しました。");
-                ModelState.AddModelError(string.Empty, ErrorMessages.UnexpectedError);
+                _logger.LogError(ex, ErrorMessages.UserLogoutError);
+                ModelState.AddModelError(string.Empty, ErrorMessages.UserLogoutError);
                 return RedirectToAction(RedirectPaths.CatalogIndex, RedirectPaths.CatalogController);
             }
         }

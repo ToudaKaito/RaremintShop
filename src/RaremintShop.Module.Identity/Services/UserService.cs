@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using RaremintShop.Module.Identity.Models;
 using Microsoft.Extensions.Logging;
+using static RaremintShop.Shared.Constants;
 
 namespace RaremintShop.Module.Identity.Services
 {
@@ -19,9 +20,6 @@ namespace RaremintShop.Module.Identity.Services
         /// <summary>ロール管理のためのRoleManager</summary>
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        /// <summary>ロガー</summary>
-        private readonly ILogger<UserService> _logger;
-
 
         /// <summary>
         /// UserService クラスの新しいインスタンスを初期化します。
@@ -31,12 +29,11 @@ namespace RaremintShop.Module.Identity.Services
         /// <param name="roleManager">ロール管理のためのRoleManager</param>
         /// <param name="logger">ロギングのためのILogger</param>
         /// <exception cref="ArgumentNullException">引数がnullの場合にスローされます</exception>
-        public UserService(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, RoleManager<IdentityRole> roleManager, ILogger<UserService> logger)
+        public UserService(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
             _roleManager = roleManager ?? throw new ArgumentNullException(nameof(roleManager));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
 
@@ -59,11 +56,24 @@ namespace RaremintShop.Module.Identity.Services
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
+                if(!result.Succeeded)
+                {
+                    return result;
+                }
+
+                // ユーザーにロールを割り当て
+                var roleResult = await _userManager.AddToRoleAsync(user, Roles.User);
+                if (!roleResult.Succeeded)
+                {
+                    // ロールの割り当てに失敗した場合、ユーザーを削除
+                    await _userManager.DeleteAsync(user);
+                    return roleResult;
+                }
+
                 return result;
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.LogError(ex, "ユーザー登録中にエラーが発生しました。");
                 throw;
             }
         }
@@ -90,9 +100,8 @@ namespace RaremintShop.Module.Identity.Services
                 var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
                 return result;
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.LogError(ex, "ユーザーログイン中にエラーが発生しました。");
                 throw;
             }
         }
@@ -107,9 +116,8 @@ namespace RaremintShop.Module.Identity.Services
             {
                 await _signInManager.SignOutAsync();
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.LogError(ex, "ユーザーログアウト中にエラーが発生しました。");
                 throw;
             }
         }
@@ -128,9 +136,8 @@ namespace RaremintShop.Module.Identity.Services
             {
                 return await _userManager.DeleteAsync(user);
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.LogError(ex, "ユーザー削除中にエラーが発生しました。");
                 throw;
             }
         }
@@ -151,11 +158,11 @@ namespace RaremintShop.Module.Identity.Services
                 var user = await _userManager.FindByIdAsync(model.Id);
                 if (user == null)
                 {
-                    throw new InvalidOperationException("ユーザーが見つかりません。");
+                    throw new InvalidOperationException(ErrorMessages.UserNotFound);
                 }
 
-                user.Email = model.Email ?? throw new ArgumentNullException(nameof(model.Email));
-                user.UserName = model.Email ?? throw new ArgumentNullException(nameof(model.Email));
+                user.Email = model.Email ?? throw new ArgumentNullException(nameof(model));
+                user.UserName = model.Email ?? throw new ArgumentNullException(nameof(model));
 
                 // アカウントの有効・無効を設定
                 user.LockoutEnd = model.IsActive ? null : DateTimeOffset.MaxValue;
@@ -178,9 +185,8 @@ namespace RaremintShop.Module.Identity.Services
                 // ユーザー情報を更新
                 return await _userManager.UpdateAsync(user);
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.LogError(ex, "ユーザー情報更新中にエラーが発生しました。");
                 throw;
             }
         }
@@ -212,9 +218,8 @@ namespace RaremintShop.Module.Identity.Services
 
                 return usersList;
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.LogError(ex, "全ユーザー取得中にエラーが発生しました。");
                 throw;
             }
         }
@@ -224,8 +229,8 @@ namespace RaremintShop.Module.Identity.Services
         /// メールアドレスからユーザーを取得します。
         /// </summary>
         /// <param name="email">メールアドレス</param>
-        /// <returns>ユーザー</returns>
-        public async Task<IdentityUser> GetByEmailAsync(string email)
+        /// <returns>ユーザー,見つからなければnullか空のIdentityUser</returns>
+        public async Task<IdentityUser?> GetByEmailAsync(string email)
         {
             ArgumentNullException.ThrowIfNull(email);
 
@@ -233,9 +238,8 @@ namespace RaremintShop.Module.Identity.Services
             {
                 return await _userManager.FindByEmailAsync(email);
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.LogError(ex, "メールアドレスからユーザー取得中にエラーが発生しました。");
                 throw;
             }
         }
@@ -245,8 +249,8 @@ namespace RaremintShop.Module.Identity.Services
         /// IDからユーザーを取得します。
         /// </summary>
         /// <param name="id">ユーザーID</param>
-        /// <returns>ユーザー</returns>
-        public async Task<IdentityUser> GetByIdAsync(string id)
+        /// <returns>ユーザー,見つからなければnullか空のIdentityUser</returns>
+        public async Task<IdentityUser?> GetByIdAsync(string id)
         {
             ArgumentNullException.ThrowIfNull(id);
 
@@ -254,9 +258,8 @@ namespace RaremintShop.Module.Identity.Services
             {
                 return await _userManager.FindByIdAsync(id);
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.LogError(ex, "IDからユーザー取得中にエラーが発生しました。");
                 throw;
             }
         }
@@ -274,21 +277,24 @@ namespace RaremintShop.Module.Identity.Services
             try
             {
                 var user = await _userManager.FindByIdAsync(id);
+                if (user == null)
+                {
+                    throw new InvalidOperationException(ErrorMessages.UserNotFound);
+                }
                 var roles = await _userManager.GetRolesAsync(user);
                 var role = roles.FirstOrDefault();
                 var model = new UserEditViewModel
                 {
                     Id = user.Id,
-                    Email = user.Email,
-                    Role = role,
+                    Email = user.Email ?? string.Empty, // Null 参照代入の可能性を回避
+                    Role = role ?? string.Empty,        // Null 参照代入の可能性を回避
                     AvailableRoles = roles.ToList(),
                     IsActive = user.LockoutEnd == null
                 };
                 return model;
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.LogError(ex, "IDからユーザー取得中にエラーが発生しました（編集用）。");
                 throw;
             }
         }
@@ -307,9 +313,8 @@ namespace RaremintShop.Module.Identity.Services
             {
                 return await _userManager.GetRolesAsync(user);
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.LogError(ex, "ユーザーのロール取得中にエラーが発生しました。");
                 throw;
             }
         }
@@ -325,9 +330,8 @@ namespace RaremintShop.Module.Identity.Services
             {
                 return await _roleManager.Roles.ToListAsync();
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.LogError(ex, "全てのロール取得中にエラーが発生しました。");
                 throw;
             }
         }

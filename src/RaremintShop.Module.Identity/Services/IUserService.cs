@@ -17,8 +17,8 @@ namespace RaremintShop.Module.Identity.Services
 
         // ユーザー情報取得
         Task<List<UserManagementViewModel>> GetAllUsersAsync();
-        Task<IdentityUser> GetByEmailAsync(string email);
-        Task<IdentityUser> GetByIdAsync(string id);
+        Task<IdentityUser?> GetByEmailAsync(string email);
+        Task<IdentityUser?> GetByIdAsync(string id);
         Task<UserEditViewModel> GetByIdForEditAsync(string id);
 
         // ロール管理
