@@ -1,62 +1,79 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RaremintShop.Module.Catalog.Models
 {
+    /// <summary>
+    /// 商品情報を管理するエンティティクラス。
+    /// </summary>
     public class Product
     {
+        /// <summary>
+        /// 主キー。
+        /// </summary>
         [Key]
-        public int ProductID { get; set; }
+        public int Id { get; set; }
 
-        [Required, StringLength(255)]
-        public string ProductName { get; set; }
+        /// <summary>
+        /// 商品名。
+        /// </summary>
+        [Required]
+        [MaxLength(100)] // 100文字まで
+        public string Name { get; set; } = string.Empty;
 
-        [Required, Column(TypeName = "decimal(10, 2)")]
+        /// <summary>
+        /// 価格。
+        /// </summary>
+        [Required]
+        [Column(TypeName = "decimal(18,2)")] // 小数点2桁まで
         public decimal Price { get; set; }
 
+        /// <summary>
+        /// カテゴリの外部キー。
+        /// </summary>
         [Required]
-        public int Stock { get; set; }
+        public int CategoryId { get; set; }
 
-        public string? Description { get; set; }
+        /// <summary>
+        /// カテゴリのナビゲーションプロパティ。
+        /// </summary>
+        [ForeignKey("CategoryId")]
+        public Category Category { get; set; } = null!;
 
-        [StringLength(255)]
-        public string? Category { get; set; }
+        /// <summary>
+        /// 商品説明。
+        /// </summary>
+        [Required]
+        [Column(TypeName = "TEXT")] // 長い説明文も格納できるように
+        public string Description { get; set; } = string.Empty;
 
-        public DateTime? CreatedAt { get; set; }
+        /// <summary>
+        /// 在庫数（デフォルト0）。
+        /// </summary>
+        [Required]
+        public int Stock { get; set; } = 0;
+
+        /// <summary>
+        /// 公開フラグ（デフォルト公開）。
+        /// </summary>
+        [Required]
+        public bool IsPublished { get; set; } = true;
+
+        /// <summary>
+        /// 作成日時。
+        /// </summary>
+        [Required]
+        [Column(TypeName = "timestamp")]
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        /// <summary>
+        /// 更新日時（NULL許可）。
+        /// </summary>
         public DateTime? UpdatedAt { get; set; }
 
-        // デフォルトコンストラクタ(ORMが使用)
-        private Product() { }
-
-        //// パラメータレスコンストラクタ
-        //public Product()
-        //{
-        //    ProductName = string.Empty;
-        //    Description = string.Empty;
-        //    Category = string.Empty;
-        //    CreatedAt = DateTime.Now;
-        //    UpdatedAt = DateTime.Now;
-        //}
-
-        //// 明示的なコンストラクタ
-        //public Product(
-        //    string productName = "TestProduct",
-        //    decimal price = 10.0m,
-        //    int stock = 100,
-        //    string description = "Description",
-        //    string category = "General",
-        //    DateTime? createdAt = null,
-        //    DateTime? updatedAt = null)
-        //{
-        //    ProductName = productName;
-        //    Price = price;
-        //    Stock = stock;
-        //    Description = description;
-        //    Category = category;
-        //    CreatedAt = createdAt ?? DateTime.Now;
-        //    UpdatedAt = updatedAt ?? DateTime.Now;
-        //}
+        /// <summary>
+        /// 画像リスト。
+        /// </summary>
+        public List<ProductImage> Images { get; set; } = new();
     }
 }

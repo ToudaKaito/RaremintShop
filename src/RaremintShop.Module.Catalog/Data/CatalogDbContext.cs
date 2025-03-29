@@ -21,7 +21,17 @@ namespace RaremintShop.Module.Catalog.Data
         /// <summary>
         /// 商品データにアクセスするための DbSet。
         /// </summary>
-        public DbSet<Product> Products { get; set; }
+        public DbSet<Product> Products { get; set; } = null!;
+
+        /// <summary>
+        /// カテゴリデータにアクセスするための DbSet。
+        /// </summary>
+        public DbSet<Category> Categories { get; set; } = null!;
+
+        /// <summary>
+        /// 商品画像データにアクセスするための DbSet。
+        /// </summary>
+        public DbSet<ProductImage> ProductImages { get; set; } = null!;
 
         /// <summary>
         /// モデルの構成を行うメソッド。
@@ -30,22 +40,41 @@ namespace RaremintShop.Module.Catalog.Data
         /// <param name="modelBuilder">モデルの構築を行う ModelBuilder インスタンス</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
-            // Product エンティティの構成を設定
-            ConfigureProductEntity(modelBuilder);
-        }
-
-        /// <summary>
-        /// Product エンティティに対する詳細な構成を行うメソッド。
-        /// インデックスの作成などのエンティティに対する設定を定義する。
-        /// </summary>
-        /// <param name="modelBuilder">エンティティモデルの構成を行う ModelBuilder</param>
-        private void ConfigureProductEntity(ModelBuilder modelBuilder)
-        {
-            // Product エンティティに対して ProductName フィールドのインデックスを作成
+            // 商品テーブルの設定
             modelBuilder.Entity<Product>()
-                .HasIndex(p => p.ProductName);
+                .Property(p => p.Price)
+                .HasColumnType("decimal(18,2)"); // 価格のデータ型をdecimal(18,2)に設定
+
+            modelBuilder.Entity<Product>()
+                .Property(p => p.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP"); // 作成日時のデフォルト値を現在のタイムスタンプに設定
+
+            modelBuilder.Entity<Product>()
+                .Property(p => p.IsPublished)
+                .HasDefaultValue(true); // 公開フラグのデフォルト値をtrueに設定
+
+            // 商品画像テーブルの設定
+            modelBuilder.Entity<ProductImage>()
+                .Property(pi => pi.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP"); // 作成日時のデフォルト値を現在のタイムスタンプに設定
+
+            modelBuilder.Entity<ProductImage>()
+                .HasOne(p => p.Product)
+                .WithMany(p => p.Images)
+                .HasForeignKey(p => p.ProductId)
+                .OnDelete(DeleteBehavior.Cascade); // 商品が削除されたときに関連する画像も削除
+
+            // カテゴリテーブルの設定
+            modelBuilder.Entity<Category>()
+                .Property(c => c.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP"); // 作成日時のデフォルト値を現在のタイムスタンプに設定
+
+            modelBuilder.Entity<Category>()
+                .HasMany(c => c.Products)
+                .WithOne(p => p.Category)
+                .HasForeignKey(p => p.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict); // カテゴリが削除されたときに関連する商品は削除しない
         }
+
     }
 }

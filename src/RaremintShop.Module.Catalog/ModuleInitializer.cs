@@ -30,7 +30,7 @@ namespace RaremintShop.Module.Catalog
                     new MySqlServerVersion(new Version(8, 0, 36))));
 
             // Catalogモジュールのサービスを依存性注入コンテナに登録
-            services.AddScoped<IProductService, ProductService>();
+            //services.AddScoped<IProductService, ProductService>();
         }
 
         /// <summary>
