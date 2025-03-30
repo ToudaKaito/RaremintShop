@@ -1,4 +1,6 @@
-﻿@{
+﻿@model List<RaremintShop.Module.Catalog.Models.CatalogViewModel>
+
+@{
     ViewBag.Title = "商品一覧";
 }
 
@@ -6,37 +8,25 @@
     <h1 class="text-center mb-5">商品一覧</h1>
 
     <div class="row justify-content-center">
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-sm">
-                <img src="https://via.placeholder.com/300" class="card-img-top" alt="商品画像">
-                <div class="card-body text-center">
-                    <h5 class="card-title">サンプル商品1</h5>
-                    <p class="card-text">こちらはサンプル商品の説明です。魅力的な商品です。</p>
-                    <a href="#" class="btn btn-primary">詳細を見る</a>
+        <!-- 商品リストをループして表示 -->
+        @foreach (var product in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <!-- 商品画像を表示。複数の画像がある場合は最初の画像を使用 -->
+                    <img src="@product.ImageUrls.FirstOrDefault()" class="card-img-top" alt="@product.Name">
+                    <div class="card-body text-center">
+                        <!-- 商品名を表示 -->
+                        <h5 class="card-title">@product.Name</h5>
+                        <!-- 商品説明を表示 -->
+                        <p class="card-text">@product.Description</p>
+                        <!-- 商品価格を表示。通貨形式にフォーマット -->
+                        <p class="card-text font-weight-bold">@product.Price.ToString("C")</p>
+                        <!-- 詳細ページへのリンクボタン -->
+                        <a href="#" class="btn btn-primary">詳細を見る</a>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-sm">
-                <img src="https://via.placeholder.com/300" class="card-img-top" alt="商品画像">
-                <div class="card-body text-center">
-                    <h5 class="card-title">サンプル商品2</h5>
-                    <p class="card-text">こちらはサンプル商品の説明です。魅力的な商品です。</p>
-                    <a href="#" class="btn btn-primary">詳細を見る</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-sm">
-                <img src="https://via.placeholder.com/300" class="card-img-top" alt="商品画像">
-                <div class="card-body text-center">
-                    <h5 class="card-title">サンプル商品3</h5>
-                    <p class="card-text">こちらはサンプル商品の説明です。魅力的な商品です。</p>
-                    <a href="#" class="btn btn-primary">詳細を見る</a>
-                </div>
-            </div>
-        </div>
+        }
     </div>
 </div>

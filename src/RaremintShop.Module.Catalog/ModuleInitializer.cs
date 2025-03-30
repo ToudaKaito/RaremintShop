@@ -10,38 +10,36 @@ using RaremintShop.Module.Core;
 namespace RaremintShop.Module.Catalog
 {
     /// <summary>
-    /// カタログモジュールの初期化処理を行うクラス。
-    /// モジュール固有のサービスやデータベースの設定を行う。
+    /// Catalogモジュールの初期化処理を行うクラス。
     /// </summary>
     public class ModuleInitializer : IModuleInitializer
     {
         /// <summary>
-        /// カタログモジュールに必要なサービスを登録するメソッド。
-        /// データベースコンテキストやサービスの依存性注入を設定する。
+        /// Catalogモジュールのサービスを設定します。
         /// </summary>
-        /// <param name="services">DIコンテナにサービスを登録するための IServiceCollection</param>
-        /// <param name="configuration">アプリケーションの設定情報</param>
+        /// <param name="services">IServiceCollection インスタンス。依存性注入に使用される。</param>
+        /// <param name="configuration">IConfiguration インスタンス。アプリケーションの設定情報を提供する。</param>
         public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
-            // Catalogモジュール用のデータベースコンテキストを登録し、MySQLを使用
+            // CatalogDbContextの登録
             services.AddDbContext<CatalogDbContext>(options =>
                 options.UseMySql(
-                    configuration.GetConnectionString("DefaultConnection"), // WebHostの接続文字列を利用
-                    new MySqlServerVersion(new Version(8, 0, 36))));
+                    configuration.GetConnectionString("DefaultConnection"),
+                    ServerVersion.AutoDetect(configuration.GetConnectionString("DefaultConnection"))));
 
             // Catalogモジュールのサービスを依存性注入コンテナに登録
             //services.AddScoped<IProductService, ProductService>();
         }
 
         /// <summary>
-        /// カタログモジュールのルーティングやミドルウェアの設定を行うメソッド。
-        /// 必要に応じて、アプリケーションに特定のミドルウェアやルーティングを追加する。
+        /// Catalogモジュールのミドルウェアやルーティングを設定します。
         /// </summary>
-        /// <param name="app">アプリケーションの IApplicationBuilder</param>
-        /// <param name="env">アプリケーションのホスティング環境</param>
+        /// <param name="app">IApplicationBuilder インスタンス。アプリケーションのリクエストパイプラインを構築するために使用される。</param>
+        /// <param name="env">IWebHostEnvironment インスタンス。アプリケーションのホスティング環境を提供する。</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // 必要に応じてルーティングやミドルウェアの設定を行う
+            // 現在は特に設定は行っていない
         }
     }
 }
