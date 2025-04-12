@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RaremintShop.Module.Catalog.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateCatalogSchema : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

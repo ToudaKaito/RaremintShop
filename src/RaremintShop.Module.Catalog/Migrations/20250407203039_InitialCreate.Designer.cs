@@ -12,8 +12,8 @@ using RaremintShop.Module.Catalog.Data;
 namespace RaremintShop.Module.Catalog.Migrations
 {
     [DbContext(typeof(CatalogDbContext))]
-    [Migration("20250329170931_UpdateCatalogSchema")]
-    partial class UpdateCatalogSchema
+    [Migration("20250407203039_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

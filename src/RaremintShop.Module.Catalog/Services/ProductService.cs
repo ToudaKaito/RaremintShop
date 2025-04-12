@@ -1,4 +1,5 @@
-﻿using RaremintShop.Module.Catalog.Models;
+﻿using Microsoft.AspNetCore.Identity;
+using RaremintShop.Module.Catalog.Models;
 using RaremintShop.Module.Catalog.Repositories;
 using System.Threading.Tasks;
 
@@ -16,37 +17,95 @@ namespace RaremintShop.Module.Catalog.Services
             _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         }
 
-        /// <summary>
-        /// 非同期でIDを元に商品を取得します。
-        /// </summary>
-        public async Task<Product> GetProductByIdAsync(int productId)
+        
+        // 全商品取得
+        public async Task<List<CatalogViewModel>> GetAllProductsAsync()
         {
-            var product = await _productRepository.GetProductByIdAsync(productId);
-            return product ?? throw new NullReferenceException($"Product with ID {productId} not found.");
+            try
+            {
+                var products = await _productRepository.GetAllProductsAsync();
+                var catalogList = new List<CatalogViewModel>();
+                if (products.Any())
+                {
+                    return products.Select(p => new CatalogViewModel
+                    {
+                        Id = p.Id,
+                        Name = p.Name ?? string.Empty, // Null 参照代入の可能性を回避
+                        Description = p.Description ?? string.Empty, // Null 参照代入の可能性を回避
+                        Price = p.Price,
+                        StockQuantity = p.Stock, // Stock プロパティを StockQuantity にマッピング
+                        ImageUrls = p.Images.Select(i => i.ImageUrl).ToList()
+                    }).ToList();
+                }
+                else
+                {
+                    return catalogList;
+                }
+                
+            }
+            catch
+            {
+                throw;
+            }
         }
 
-        /// <summary>
-        /// 非同期でキーワードとカテゴリーに基づいて商品を検索します。
-        /// </summary>
-        public async Task<IEnumerable<Product>> SearchProductsAsync(string keyword, string category)
+        // 全カテゴリ取得
+        public async Task<List<Category>> GetAllCategoriesAsync()
         {
-            return await _productRepository.SearchProductsAsync(keyword, category);
+            try
+            {
+                var categories = await _productRepository.GetAllCategoriesAsync();
+                if (categories.Any())
+                {
+                    return categories.ToList();
+                }
+                else
+                {
+                    return new List<Category>();
+                }
+            }
+            catch
+            {
+                throw;
+            }
         }
 
-        /// <summary>
-        /// 非同期で新しい商品を追加します。
-        /// </summary>
-        public async Task AddProductAsync(Product product)
+        // 商品の登録
+        public async Task<bool> RegisterCategoryAsync(Category category)
         {
-            await _productRepository.AddProductAsync(product);
+            try
+            {
+                if (category == null)
+                {
+                    throw new ArgumentNullException(nameof(category));
+                }
+                if(CategoryNameExistsAsync(category.Name).Result)
+                {
+                    throw new InvalidOperationException("カテゴリ名が既に存在します。");
+                }
+
+                var result = await _productRepository.RegisterCategoryAsync(category);
+                return result;
+            }
+            catch
+            {
+                throw;
+            }
         }
 
-        /// <summary>
-        /// 非同期で商品情報を更新します。
-        /// </summary>
-        public async Task UpdateProductAsync(Product product)
+        // カテゴリ名のバリデーション
+        public async Task<bool> CategoryNameExistsAsync(string categoryName)
         {
-            await _productRepository.UpdateProductAsync(product);
+            try
+            {
+                var categories = await _productRepository.GetAllCategoriesAsync();
+                return categories.Any(c => c.Name == categoryName);
+            }
+            catch
+            {
+                throw;
+            }
+
         }
     }
 }

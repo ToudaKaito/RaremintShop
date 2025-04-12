@@ -28,7 +28,7 @@ namespace RaremintShop.Module.Catalog
                     ServerVersion.AutoDetect(configuration.GetConnectionString("DefaultConnection"))));
 
             // Catalogモジュールのサービスを依存性注入コンテナに登録
-            //services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IProductService, ProductService>();
         }
 
         /// <summary>

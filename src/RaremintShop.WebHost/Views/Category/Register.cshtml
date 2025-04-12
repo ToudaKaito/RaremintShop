@@ -1,0 +1,17 @@
+﻿@model RaremintShop.Module.Catalog.Models.Category
+
+@{
+    ViewBag.Title = "カテゴリ追加";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center mb-5">カテゴリ追加</h1>
+
+    <form asp-action="Register" method="post">
+        <div class="form-group">
+            <label for="name">カテゴリ名</label>
+            <input type="text" class="form-control" id="name" name="Name" required />
+        </div>
+        <button type="submit" class="btn btn-primary">追加</button>
+    </form>
+</div>

@@ -4,6 +4,8 @@ using RaremintShop.Module.Identity.Models;
 using RaremintShop.Module.Identity.Services;
 using static RaremintShop.Shared.Constants;
 using System.Diagnostics;
+using RaremintShop.Module.Catalog.Models;
+using RaremintShop.Module.Catalog.Services;
 
 namespace RaremintShop.WebHost.Controllers
 {
@@ -13,6 +15,9 @@ namespace RaremintShop.WebHost.Controllers
         /// <summary>ユーザー管理、認証、およびロール管理のためのサービス</summary>
         private readonly IUserService _userService;
 
+        /// <summary>商品管理のためのサービス</summary>
+        private readonly IProductService _productService;
+
         /// <summary>ロガー</summary>
         private readonly ILogger<AdminController> _logger;
 
@@ -21,9 +26,10 @@ namespace RaremintShop.WebHost.Controllers
         /// </summary>
         /// <param name="userService">UserServiceのインターフェース</param>
         /// <param name="logger">ロギングのためのILogger</param>
-        public AdminController(IUserService userService, ILogger<AdminController> logger)
+        public AdminController(IUserService userService, IProductService productService, ILogger<AdminController> logger)
         {
             _userService = userService;
+            _productService = productService;
             _logger = logger;
         }
 
@@ -159,6 +165,42 @@ namespace RaremintShop.WebHost.Controllers
                 ModelState.AddModelError(string.Empty, ErrorMessages.UserDeleteError);
                 return RedirectToAction(RedirectPaths.AdminUserManagement, RedirectPaths.AdminController);
             }
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> ProductManagement()
+        {
+            try
+            {
+                var products = await _productService.GetAllProductsAsync();
+                return View(products);
+            }
+            catch (Exception ex)
+            {
+                // エラーメッセージを表示
+                _logger.LogError(ex, ErrorMessages.ProductFetchError);
+                ModelState.AddModelError(string.Empty, ErrorMessages.ProductFetchError);
+                return View(new List<CatalogViewModel>());
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CategoryManagement()
+        {
+            try
+            {
+                var categories = await _productService.GetAllCategoriesAsync();
+                return View(categories);
+            }
+            catch (Exception ex)
+            {
+                // エラーメッセージを表示
+                _logger.LogError(ex, ErrorMessages.CategoryFetchError);
+                ModelState.AddModelError(string.Empty, ErrorMessages.CategoryFetchError);
+                return View(new List<Category>());
+            }
+
         }
     }
 }

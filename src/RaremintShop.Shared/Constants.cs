@@ -13,6 +13,8 @@
             public const string UserRegisterError = "ユーザー登録中にエラーが発生しました。";
             public const string UserLoginError = "ユーザーログイン中にエラーが発生しました。";
             public const string UserLogoutError = "ユーザーログアウト中にエラーが発生しました。";
+            public const string ProductFetchError = "商品の取得中にエラーが発生しました。";
+            public const string CategoryFetchError = "カテゴリの取得中にエラーが発生しました。";
         }
 
         public static class  Roles
@@ -28,6 +30,7 @@
             public const string AdminDashboard = "Dashboard";
             public const string AdminUserManagement = "UserManagement";
             public const string AdminController = "Admin";
+            
 
         }
     }
