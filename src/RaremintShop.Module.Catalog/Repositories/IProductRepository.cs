@@ -13,10 +13,9 @@ namespace RaremintShop.Module.Catalog.Repositories
         /// <returns>商品のリスト</returns>
         Task<IEnumerable<Product>> GetAllProductsAsync();
 
-        /// <summary>
-        /// 全てのカテゴリを非同期に取得します。
-        /// </summary>
-        /// <returns></returns>
-        Task<IEnumerable<Category>> GetAllCategoriesAsync();
+        
+
+        Task<bool> RegisterProductAsync(Product product);
+        Task<bool> RegisterProductImagesAsync(List<ProductImage> images);
     }
 }

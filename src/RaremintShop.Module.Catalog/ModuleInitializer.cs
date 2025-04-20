@@ -29,6 +29,7 @@ namespace RaremintShop.Module.Catalog
 
             // Catalogモジュールのサービスを依存性注入コンテナに登録
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ICategoryService, CategoryService>();
         }
 
         /// <summary>

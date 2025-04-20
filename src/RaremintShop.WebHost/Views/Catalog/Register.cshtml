@@ -1,0 +1,123 @@
+﻿@model RaremintShop.Module.Catalog.Models.ProductRegisterViewModel
+
+@{
+    ViewBag.Title = "商品登録";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">商品登録</h2>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <form asp-action="Register" method="post" enctype="multipart/form-data" class="shadow p-4 rounded bg-light">
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <!-- 商品名 -->
+                <div class="form-group mb-3">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <!-- 価格 -->
+                <div class="form-group mb-3">
+                    <label asp-for="Price" class="form-label"></label>
+                    <input asp-for="Price" class="form-control" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+
+                <!-- カテゴリ -->
+                <div class="form-group mb-3">
+                    <label asp-for="CategoryId" class="form-label"></label>
+                    <select asp-for="CategoryId" class="form-control" asp-items="Model.CategoryList"></select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                <!-- 商品説明 -->
+                <div class="form-group mb-3">
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <!-- 在庫数 -->
+                <div class="form-group mb-3">
+                    <label asp-for="Stock" class="form-label"></label>
+                    <input asp-for="Stock" class="form-control" />
+                    <span asp-validation-for="Stock" class="text-danger"></span>
+                </div>
+
+                <!-- 公開フラグ -->
+                <div class="form-group mb-3 form-check">
+                    <input asp-for="IsPublished" class="form-check-input" />
+                    <label asp-for="IsPublished" class="form-check-label"></label>
+                    <span asp-validation-for="IsPublished" class="text-danger"></span>
+                </div>
+
+                <!-- 画像アップロード（1個ずつ選択 + 削除ボタン） -->
+                <div class="form-group mb-3">
+                    <label class="form-label">商品画像</label>
+                    <input type="file" id="imageUpload" name="Images" class="form-control mb-2" />
+                    <ul id="imageList" class="list-group"></ul>
+                    <span asp-validation-for="Images" class="text-danger"></span>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">登録</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // 画像アップロードのファイル入力要素と画像リスト表示のためのul要素を取得
+        const imageInput = document.getElementById("imageUpload");
+        const imageList = document.getElementById("imageList");
+
+        // 選択されたファイルを保持する配列
+        let selectedFiles = [];
+
+        // 画像が選択された時に実行されるイベントリスナー
+        imageInput.addEventListener("change", (e) => {
+            // ファイルが選択されていなければ処理を終了
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // 選択されたファイルをselectedFiles配列に追加
+            selectedFiles.push(file);
+
+            // 新しいリストアイテムを作成（画像の名前を表示）
+            const listItem = document.createElement("li");
+            listItem.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
+            listItem.textContent = file.name;
+
+            // 削除ボタンを作成
+            const removeBtn = document.createElement("button");
+            removeBtn.textContent = "削除";
+            removeBtn.classList.add("btn", "btn-sm", "btn-danger");
+
+            // 削除ボタンのクリック時にそのファイルをリストから削除
+            removeBtn.onclick = () => {
+                // リストアイテムを削除
+                imageList.removeChild(listItem);
+
+                // selectedFiles配列から削除されたファイルを取り除く
+                selectedFiles = selectedFiles.filter(f => f !== file);
+            };
+
+            // 削除ボタンをリストアイテムに追加
+            listItem.appendChild(removeBtn);
+
+            // 作成したリストアイテムを画像リストに追加
+            imageList.appendChild(listItem);
+
+            // 画像が選択された後、ファイル入力欄をリセットして再度同じ画像を選べるようにする
+            imageInput.value = "";
+        });
+    </script>
+}
+

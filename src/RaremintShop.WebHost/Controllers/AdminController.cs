@@ -18,6 +18,9 @@ namespace RaremintShop.WebHost.Controllers
         /// <summary>商品管理のためのサービス</summary>
         private readonly IProductService _productService;
 
+        /// <summary>カテゴリ管理のためのサービス</summary>
+        private readonly ICategoryService _categoryService;
+
         /// <summary>ロガー</summary>
         private readonly ILogger<AdminController> _logger;
 
@@ -26,10 +29,11 @@ namespace RaremintShop.WebHost.Controllers
         /// </summary>
         /// <param name="userService">UserServiceのインターフェース</param>
         /// <param name="logger">ロギングのためのILogger</param>
-        public AdminController(IUserService userService, IProductService productService, ILogger<AdminController> logger)
+        public AdminController(IUserService userService, IProductService productService, ICategoryService categoryService, ILogger<AdminController> logger)
         {
             _userService = userService;
             _productService = productService;
+            _categoryService = categoryService;
             _logger = logger;
         }
 
@@ -190,7 +194,7 @@ namespace RaremintShop.WebHost.Controllers
         {
             try
             {
-                var categories = await _productService.GetAllCategoriesAsync();
+                var categories = await _categoryService.GetAllCategoriesAsync();
                 return View(categories);
             }
             catch (Exception ex)

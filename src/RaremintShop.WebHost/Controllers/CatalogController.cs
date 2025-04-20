@@ -4,19 +4,22 @@ using RaremintShop.Module.Catalog.Services;
 using RaremintShop.Module.Catalog.Models;
 using static RaremintShop.Shared.Constants;
 using RaremintShop.Module.Identity.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace RaremintShop.WebHost.Controllers
 {
     public class CatalogController : Controller
     {
         private readonly IProductService _productService;
+        private readonly ICategoryService _categoryService;
 
         /// <summary>ロガー</summary>
         private readonly ILogger<AdminController> _logger;
 
-        public CatalogController(IProductService productService, ILogger<AdminController> logger)
+        public CatalogController(IProductService productService, ICategoryService categoryService, ILogger<AdminController> logger)
         {
             _productService = productService;
+            _categoryService = categoryService;
             _logger = logger;
         }
 
@@ -39,9 +42,51 @@ namespace RaremintShop.WebHost.Controllers
         }
 
         [HttpGet]
-        public IActionResult Register()
+        public async Task<IActionResult> Register()
         {
-            return View(new UserRegisterViewModel());
+            try
+            {
+                var categories = await _categoryService.GetAllCategoriesAsync();
+
+                var viewModel = new ProductRegisterViewModel
+                {
+                    CategoryList = new SelectList(categories, "Id", "Name")
+                };
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                // エラーメッセージを表示
+                _logger.LogError(ex, ErrorMessages.CategoryFetchError);
+                ModelState.AddModelError(string.Empty, ErrorMessages.CategoryFetchError);
+                return View(new ProductRegisterViewModel());
+            }
         }
-    }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(ProductRegisterViewModel model)
+        {
+            if(!ModelState.IsValid)
+            {
+                // カテゴリの取得
+                var categories = await _categoryService.GetAllCategoriesAsync();
+                model.CategoryList = new SelectList(categories, "Id", "Name");
+                return View(model);
+            }
+
+            try
+            {
+                await _productService.RegisterProductAsync(model);
+
+                return RedirectToAction(RedirectPaths.AdminProductManagement, RedirectPaths.AdminController);
+            }
+            catch (Exception ex)
+            {
+                // エラーメッセージを表示
+                _logger.LogError(ex, ErrorMessages.ProductRegisterError);
+                ModelState.AddModelError(string.Empty, ErrorMessages.ProductRegisterError);
+                return View(model);
+            }
+        }
 }

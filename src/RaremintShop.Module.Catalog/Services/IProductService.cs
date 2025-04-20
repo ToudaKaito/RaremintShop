@@ -1,4 +1,5 @@
 ﻿using RaremintShop.Module.Catalog.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace RaremintShop.Module.Catalog.Services
 {
@@ -10,13 +11,11 @@ namespace RaremintShop.Module.Catalog.Services
         // 全商品取得
         Task<List<CatalogViewModel>> GetAllProductsAsync();
 
-        // 全カテゴリ取得
-        Task<List<Category>> GetAllCategoriesAsync();
+
+
+
 
         // 商品の登録
-        Task<bool> RegisterCategoryAsync(Category category);
-
-        // カテゴリ名のバリデーション
-        Task<bool> CategoryNameExistsAsync(string categoryName);
+        Task RegisterProductAsync(ProductRegisterViewModel model);
     }
 }

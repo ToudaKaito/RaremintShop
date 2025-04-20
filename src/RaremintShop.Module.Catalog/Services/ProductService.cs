@@ -11,10 +11,12 @@ namespace RaremintShop.Module.Catalog.Services
     public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
+        private readonly IFileStorageService _fileStorageService;
 
-        public ProductService(IProductRepository productRepository)
+        public ProductService(IProductRepository productRepository, IFileStorageService fileStorageService)
         {
             _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
+            _fileStorageService = fileStorageService ?? throw new ArgumentNullException(nameof(fileStorageService));
         }
 
         
@@ -49,63 +51,46 @@ namespace RaremintShop.Module.Catalog.Services
             }
         }
 
-        // 全カテゴリ取得
-        public async Task<List<Category>> GetAllCategoriesAsync()
-        {
-            try
-            {
-                var categories = await _productRepository.GetAllCategoriesAsync();
-                if (categories.Any())
-                {
-                    return categories.ToList();
-                }
-                else
-                {
-                    return new List<Category>();
-                }
-            }
-            catch
-            {
-                throw;
-            }
-        }
+
+
+
 
         // 商品の登録
-        public async Task<bool> RegisterCategoryAsync(Category category)
+        public async Task RegisterProductAsync(ProductRegisterViewModel model)
         {
-            try
+            // Productのドメインモデルを作成
+            var product = new Product
             {
-                if (category == null)
-                {
-                    throw new ArgumentNullException(nameof(category));
-                }
-                if(CategoryNameExistsAsync(category.Name).Result)
-                {
-                    throw new InvalidOperationException("カテゴリ名が既に存在します。");
-                }
+                Name = model.Name,
+                Price = model.Price,
+                CategoryId = model.CategoryId,
+                Description = model.Description,
+                Stock = model.Stock,
+                IsPublished = model.IsPublished,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                Images = new List<ProductImage>()
+            };
 
-                var result = await _productRepository.RegisterCategoryAsync(category);
-                return result;
-            }
-            catch
+            // 画像が存在する場合のみ保存処理を行う
+            if (model.Images != null && model.Images.Any())
             {
-                throw;
+                foreach (var image in model.Images)
+                {
+                    // ファイル保存処理（サービスを通して）
+                    var imagePath = await _fileStorageService.SaveFileAsync(image);
+
+                    // 保存後のファイルパスをProductImageとして追加
+                    product.Images.Add(new ProductImage
+                    {
+                        ImageUrl = imagePath
+                    });
+                }
             }
+
+            // 商品をDBに保存（リポジトリを通じて）
+            await _productRepository.AddAsync(product);
         }
 
-        // カテゴリ名のバリデーション
-        public async Task<bool> CategoryNameExistsAsync(string categoryName)
-        {
-            try
-            {
-                var categories = await _productRepository.GetAllCategoriesAsync();
-                return categories.Any(c => c.Name == categoryName);
-            }
-            catch
-            {
-                throw;
-            }
-
-        }
     }
 }

@@ -6,46 +6,23 @@ using RaremintShop.Module.Catalog.Repositories;
 
 namespace RaremintShop.Infrastructure.Repositories
 {
-    ///// <summary>
-    ///// 商品情報を管理するリポジトリの実装クラス
-    ///// </summary>
-    public class ProductRepository : BaseRepository<CatalogDbContext>, IProductRepository
+    public class CategoryRepository : BaseRepository<CatalogDbContext>, ICategoryRepository
     {
         /// <summary>
         /// コンストラクタ。データベースコンテキストとロガーを受け取ります。
         /// </summary>
         /// <param name="context">データベースコンテキスト</param>
         /// <param name="logger">ロガーインスタンス</param>
-        public ProductRepository(CatalogDbContext context, ILogger<ProductRepository> logger)
+        public CategoryRepository(CatalogDbContext context, ILogger<CategoryRepository> logger)
             : base(context, logger)
         {
         }
 
-
-
-
-
-        public async Task<IEnumerable<Product>> GetAllProductsAsync()
+        public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
         {
             try
             {
-                return await _context.Products.ToListAsync();
-            }
-            catch
-            {
-                throw;
-            }
-
-        }
-
-        
-
-        public async Task<bool> RegisterProductAsync(Product product)
-        {
-            try
-            {
-                _context.Products.Add(product);
-                return await _context.SaveChangesAsync() > 0;
+                return await _context.Categories.ToListAsync();
             }
             catch
             {
@@ -53,11 +30,11 @@ namespace RaremintShop.Infrastructure.Repositories
             }
         }
 
-        public async Task<bool> RegisterProductImagesAsync(List<ProductImage> images)
+        public async Task<bool> RegisterCategoryAsync(Category category)
         {
             try
             {
-                _context.ProductImages.AddRange(images);
+                _context.Categories.Add(category);
                 return await _context.SaveChangesAsync() > 0;
             }
             catch

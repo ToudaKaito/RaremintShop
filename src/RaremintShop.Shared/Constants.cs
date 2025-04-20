@@ -15,6 +15,8 @@
             public const string UserLogoutError = "ユーザーログアウト中にエラーが発生しました。";
             public const string ProductFetchError = "商品の取得中にエラーが発生しました。";
             public const string CategoryFetchError = "カテゴリの取得中にエラーが発生しました。";
+            public const string CategoryRegisterError = "カテゴリ登録中にエラーが発生しました。";
+            public const string ProductRegisterError = "商品登録中にエラーが発生しました。";
         }
 
         public static class  Roles
@@ -27,11 +29,12 @@
         {
             public const string CatalogIndex = "Index";
             public const string CatalogController = "Catalog";
+            public const string CategoryController = "Category";
             public const string AdminDashboard = "Dashboard";
             public const string AdminUserManagement = "UserManagement";
             public const string AdminController = "Admin";
-            
-
+            public const string AdminCategoryManagement = "CategoryManagement";
+            public const string AdminProductManagement = "ProductManagement";
         }
     }
 }
