@@ -15,7 +15,9 @@ namespace RaremintShop.Module.Catalog.Models
         public Product Product { get; set; } = null!;  // ナビゲーションプロパティ
 
         [Required]
-        public string ImageUrl { get; set; } = string.Empty;  // 画像URL
+        public string ImagePath { get; set; } = string.Empty;  // 画像URL
+
+        public int SortOrder { get; set; }
 
         [Required]
         [Column(TypeName = "timestamp")]

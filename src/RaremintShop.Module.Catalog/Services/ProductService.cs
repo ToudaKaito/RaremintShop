@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using RaremintShop.Module.Catalog.Models;
 using RaremintShop.Module.Catalog.Repositories;
+using RaremintShop.Shared.Services;
 using System.Threading.Tasks;
 
 namespace RaremintShop.Module.Catalog.Services
@@ -36,7 +37,7 @@ namespace RaremintShop.Module.Catalog.Services
                         Description = p.Description ?? string.Empty, // Null 参照代入の可能性を回避
                         Price = p.Price,
                         StockQuantity = p.Stock, // Stock プロパティを StockQuantity にマッピング
-                        ImageUrls = p.Images.Select(i => i.ImageUrl).ToList()
+                        ImageUrls = p.Images.Select(i => i.ImagePath).ToList()
                     }).ToList();
                 }
                 else
@@ -56,40 +57,77 @@ namespace RaremintShop.Module.Catalog.Services
 
 
         // 商品の登録
-        public async Task RegisterProductAsync(ProductRegisterViewModel model)
+        public async Task<bool> RegisterProductAsync(ProductRegisterViewModel model)
         {
-            // Productのドメインモデルを作成
-            var product = new Product
+            try
             {
-                Name = model.Name,
-                Price = model.Price,
-                CategoryId = model.CategoryId,
-                Description = model.Description,
-                Stock = model.Stock,
-                IsPublished = model.IsPublished,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
-                Images = new List<ProductImage>()
-            };
+                ArgumentNullException.ThrowIfNull(model);
 
-            // 画像が存在する場合のみ保存処理を行う
-            if (model.Images != null && model.Images.Any())
-            {
-                foreach (var image in model.Images)
+                // Productのドメインモデルを作成
+                var product = new Product
                 {
-                    // ファイル保存処理（サービスを通して）
-                    var imagePath = await _fileStorageService.SaveFileAsync(image);
+                    Name = model.Name,
+                    Price = model.Price,
+                    CategoryId = model.CategoryId,
+                    Description = model.Description,
+                    Stock = model.Stock,
+                    IsPublished = model.IsPublished,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                };
 
-                    // 保存後のファイルパスをProductImageとして追加
-                    product.Images.Add(new ProductImage
+                // 商品をDBに保存（リポジトリを通じて）
+                var result = await _productRepository.RegisterProductAsync(product);
+
+                if (!result)
+                {
+                    return result;// 商品の保存に失敗した場合
+                }
+
+                // 画像が存在する場合のみ保存処理を行う
+                if (model.Images != null && model.Images.Any())
+                {
+                    // 現在登録されている画像の最大並び順を取得
+                    var currentMaxSortOrder = await _productRepository.GetMaxSortOrderAsync(product.Id);
+
+                    // 画像の並び順を設定しながら保存
+                    foreach (var (image, index) in model.Images.Select((value, index) => (value, index)))
                     {
-                        ImageUrl = imagePath
-                    });
+                        // ファイル保存処理（サービスを通して）
+                        byte[] fileData;
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            await image.OpenReadStream().CopyToAsync(memoryStream);
+                            fileData = memoryStream.ToArray(); // Stream を byte[] に変換
+                        }
+
+                        var imagePath = await _fileStorageService.SaveFileAsync(
+                            fileData,        // ファイルのバイナリデータ
+                            image.FileName,  // 元のファイル名
+                            "products"       // 保存先のサブディレクトリ
+                        );
+
+                        // 保存後のファイルパスをProductImageとして追加
+                        var productImage = new ProductImage
+                        {
+                            ProductId = product.Id, // 商品IDをセット（商品がDBに保存された後に設定される）
+                            ImagePath = imagePath,
+                            SortOrder = currentMaxSortOrder + index + 1, // 最大並び順 + 1 + インデックスで並べる
+                        };
+
+                        // 画像の情報をリポジトリ経由で保存
+                        var imageSaveResult = await _productRepository.AddProductImageAsync(productImage);
+                        if (!imageSaveResult)
+                        {
+                            return false; // 画像保存に失敗した場合
+                        }
+                    }
                 }
             }
-
-            // 商品をDBに保存（リポジトリを通じて）
-            await _productRepository.AddAsync(product);
+            catch
+            {
+                throw;
+            }
         }
 
     }

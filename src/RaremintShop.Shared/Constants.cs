@@ -17,6 +17,15 @@
             public const string CategoryFetchError = "カテゴリの取得中にエラーが発生しました。";
             public const string CategoryRegisterError = "カテゴリ登録中にエラーが発生しました。";
             public const string ProductRegisterError = "商品登録中にエラーが発生しました。";
+
+            public const string FileSaveError = "ファイルの保存中にエラーが発生しました。";
+            public const string FileEmptyError = "ファイルが空です。";
+            public const string FileCategoryMissingError = "ファイルカテゴリが指定されていません。";
+            public const string FileLoadError = "ファイルの読み込み中にエラーが発生しました。";
+            public const string DirectoryCreateError = "ディレクトリの作成中にエラーが発生しました。";
+            public const string FileExtensionMissingError = "ファイルに拡張子がありません。";
+            public const string FileFormatNotAllowedError = "許可されていないファイル形式です。";
+
         }
 
         public static class  Roles

@@ -67,7 +67,7 @@ namespace RaremintShop.WebHost.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(ProductRegisterViewModel model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 // カテゴリの取得
                 var categories = await _categoryService.GetAllCategoriesAsync();
@@ -77,9 +77,16 @@ namespace RaremintShop.WebHost.Controllers
 
             try
             {
-                await _productService.RegisterProductAsync(model);
+                var result = await _productService.RegisterProductAsync(model);
 
-                return RedirectToAction(RedirectPaths.AdminProductManagement, RedirectPaths.AdminController);
+                if (result)
+                {
+                    return RedirectToAction(RedirectPaths.AdminProductManagement, RedirectPaths.AdminController);
+                }
+                else
+                {
+                    return View(model);
+                }
             }
             catch (Exception ex)
             {
@@ -89,4 +96,5 @@ namespace RaremintShop.WebHost.Controllers
                 return View(model);
             }
         }
+    }
 }

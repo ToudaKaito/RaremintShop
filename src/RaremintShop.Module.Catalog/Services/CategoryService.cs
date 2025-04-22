@@ -43,10 +43,7 @@ namespace RaremintShop.Module.Catalog.Services
         {
             try
             {
-                if (category == null)
-                {
-                    throw new ArgumentNullException(nameof(category));
-                }
+                ArgumentNullException.ThrowIfNull(category);
                 if (CategoryNameExistsAsync(category.Name).Result)
                 {
                     throw new InvalidOperationException("カテゴリ名が既に存在します。");

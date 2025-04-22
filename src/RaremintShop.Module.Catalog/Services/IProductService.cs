@@ -16,6 +16,6 @@ namespace RaremintShop.Module.Catalog.Services
 
 
         // 商品の登録
-        Task RegisterProductAsync(ProductRegisterViewModel model);
+        Task<bool> RegisterProductAsync(ProductRegisterViewModel model);
     }
 }
