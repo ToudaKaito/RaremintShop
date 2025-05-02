@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - 管理者画面</title>
+
+    <!-- Bootstrap CSS: レスポンシブデザインを簡単に実現するためのフレームワーク -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- カスタム CSS: 管理者画面専用のスタイルを適用 -->
+    <link rel="stylesheet" href="~/css/admin.css" />
+
+    <style>
+        /* 全体のフォント設定 */
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        /* ナビゲーションバーのデザイン */
+        .navbar {
+            background-color: #343a40; /* ダークグレー */
+        }
+
+        .navbar-brand, .nav-link {
+            color: white !important; /* テキストを白色に */
+        }
+
+            .navbar-brand:hover, .nav-link:hover {
+                color: #ffc107 !important; /* ホバー時に黄色に */
+            }
+
+        /* フッターのデザイン */
+        footer {
+            background-color: #f8f9fa; /* 明るいグレー */
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 50px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .footer p {
+            margin: 0;
+            color: #6c757d; /* 薄いグレー */
+        }
+    </style>
+</head>
+<body>
+    <!-- ヘッダー部分 -->
+    <header>
+        <!-- 管理者用ナビゲーションバー -->
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+            <div class="container">
+                <!-- ロゴ部分: 管理者ダッシュボードへのリンク -->
+                <a class="navbar-brand" href="/Admin/Dashboard">管理者ダッシュボード</a>
+
+                <!-- モバイル用のメニューボタン -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar" aria-controls="adminNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- ナビゲーションメニュー -->
+                <div class="collapse navbar-collapse" id="adminNavbar">
+                    <ul class="navbar-nav ms-auto">
+                        <!-- 商品管理へのリンク -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Admin/ProductManagement">商品管理</a>
+                        </li>
+                        <!-- カテゴリ管理へのリンク -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Admin/CategoryManagement">カテゴリ管理</a>
+                        </li>
+                        <!-- ユーザー管理へのリンク -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Admin/UserManagement">ユーザー管理</a>
+                        </li>
+                        <!-- ログアウトボタン -->
+                        <li class="nav-item">
+                            <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                <button type="submit" class="nav-link btn btn-link text-danger">ログアウト</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- メインコンテンツ部分 -->
+    <main class="container mt-4">
+        <!-- 各ビューのコンテンツがここに挿入される -->
+        @RenderBody()
+    </main>
+
+    <!-- フッター部分 -->
+    <footer class="footer bg-light text-center py-3 mt-4">
+        <div class="container">
+            <p>&copy; 2024 管理者画面</p>
+        </div>
+    </footer>
+
+    <!-- 必要なスクリプトの読み込み -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script> <!-- jQuery: Bootstrapの一部機能に必要 -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> <!-- BootstrapのJavaScript機能 -->
+    <!-- 各ビューで追加のスクリプトを挿入可能 -->
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

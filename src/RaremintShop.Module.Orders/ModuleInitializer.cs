@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RaremintShop.Module.Core;
 using RaremintShop.Module.Orders.Data;
-using RaremintShop.Module.Orders.Services;
 
 namespace RaremintShop.Module.Orders
 {
@@ -30,8 +29,6 @@ namespace RaremintShop.Module.Orders
                     new MySqlServerVersion(new Version(8, 0, 36))));
 
             // Ordersモジュールのサービスを依存性注入コンテナに登録
-            services.AddScoped<IOrderService, OrderService>();
-            services.AddScoped<IOrderDetailService, OrderDetailService>();
         }
 
         /// <summary>

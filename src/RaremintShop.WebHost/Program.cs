@@ -1,6 +1,7 @@
 using RaremintShop.Infrastructure;
 using RaremintShop.Module.Core;
 using RaremintShop.Shared;
+using RaremintShop.WebHost.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,6 +66,9 @@ app.UseHttpsRedirection();
 
 // 静的ファイル（CSSや画像など）を提供するミドルウェア
 app.UseStaticFiles();
+
+// 例外処理ミドルウェアを追加
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // ルーティングを有効にするミドルウェア
 app.UseRouting();

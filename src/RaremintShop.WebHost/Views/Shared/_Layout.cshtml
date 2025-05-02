@@ -3,36 +3,39 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewBag.Title</title>
+    <title>@ViewBag.Title - MyShop</title>
 
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap CSS: レスポンシブデザインを簡単に実現するためのフレームワーク -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
-    <!-- Custom CSS -->
+    <!-- カスタム CSS: サイト全体のデザインを調整するための独自スタイル -->
     <link rel="stylesheet" href="~/css/site.css" />
 
-    <!-- Google Fonts -->
+    <!-- Google Fonts: サイトのフォントをおしゃれにするために使用 -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
 
     <style>
+        /* 全体のフォント設定 */
         body {
             font-family: 'Roboto', sans-serif;
         }
 
+        /* ナビゲーションバーのデザイン */
         .navbar {
-            background-color: #343a40;
+            background-color: #007bff; /* 青色 */
         }
 
         .navbar-brand, .nav-link {
-            color: white !important;
+            color: white !important; /* テキストを白色に */
         }
 
             .navbar-brand:hover, .nav-link:hover {
-                color: #ffc107 !important;
+                color: #ffc107 !important; /* ホバー時に黄色に */
             }
 
+        /* フッターのデザイン */
         footer {
-            background-color: #f8f9fa;
+            background-color: #f8f9fa; /* 明るいグレー */
             padding: 20px 0;
             text-align: center;
             margin-top: 50px;
@@ -41,65 +44,81 @@
 
         .footer p {
             margin: 0;
-            color: #6c757d;
+            color: #6c757d; /* 薄いグレー */
         }
     </style>
 </head>
 <body>
+    <!-- ヘッダー部分 -->
     <header>
-        <!-- Navbar -->
-        <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm">
+        <!-- ナビゲーションバー -->
+        <nav class="navbar navbar-expand-md navbar-dark shadow-sm">
             <div class="container">
-                <!-- 商品一覧ページに戻るためのリンク -->
-                <a class="navbar-brand" href="@Url.Action("Index", "Catalog")">MyShop</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <!-- ロゴ部分: ホームページへのリンク -->
+                <a class="navbar-brand" href="/">MyShop</a>
+
+                <!-- モバイル用のメニューボタン -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
+                <!-- ナビゲーションメニュー -->
                 <div class="collapse navbar-collapse" id="navbarCollapse">
-                    <ul class="navbar-nav ml-auto">
+                    <ul class="navbar-nav ms-auto">
+                        <!-- 商品一覧へのリンク -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Catalog">商品一覧</a>
+                        </li>
+                        <!-- カートへのリンク -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Cart">カート</a>
+                        </li>
+                        <!-- ログイン状態に応じた表示 -->
                         @if (User.Identity.IsAuthenticated)
                         {
+                            <!-- ログイン済みの場合 -->
                             <li class="nav-item">
                                 <span class="nav-link">ようこそ, @User.Identity.Name さん</span>
                             </li>
-                            <form asp-controller="Account" asp-action="Logout" method="post">
-                                <button type="submit" class="btn btn-danger">ログアウト</button>
-                            </form>
+                            <li class="nav-item">
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-danger btn-sm">ログアウト</button>
+                                </form>
+                            </li>
                         }
                         else
                         {
-                            <!-- ログインリンク -->
+                            <!-- 未ログインの場合 -->
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Account" asp-action="Login">ログイン</a>
                             </li>
-                            <!-- 新規登録リンク -->
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Account" asp-action="Register">新規登録</a>
                             </li>
-                        }                  
+                        }
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
 
-    <!-- Main content -->
+    <!-- メインコンテンツ部分 -->
     <main role="main" class="container mt-5">
+        <!-- 各ビューのコンテンツがここに挿入される -->
         @RenderBody()
     </main>
 
-    <!-- Footer -->
+    <!-- フッター部分 -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2024 - MyShop</p>
+            <p>&copy; 2024 MyShop. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- Bootstrap and jQuery scripts -->
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
+    <!-- 必要なスクリプトの読み込み -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script> <!-- jQuery: Bootstrapの一部機能に必要 -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> <!-- BootstrapのJavaScript機能 -->
+    <!-- 各ビューで追加のスクリプトを挿入可能 -->
     @RenderSection("Scripts", required: false)
 </body>
 </html>

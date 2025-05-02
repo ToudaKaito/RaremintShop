@@ -1,9 +1,5 @@
 ﻿using RaremintShop.Module.Catalog.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using RaremintShop.Module.Core.Interface;
 
 namespace RaremintShop.Module.Catalog.Services
 {
@@ -16,6 +12,15 @@ namespace RaremintShop.Module.Catalog.Services
         Task<bool> RegisterCategoryAsync(Category category);
 
         // カテゴリ名のバリデーション
-        Task<bool> CategoryNameExistsAsync(string categoryName);
+        Task<bool> CategoryNameExistsAsync(string categoryName, int? excludeId = null);
+
+        // IDでカテゴリ取得
+        Task<Category> GetCategoryByIdAsync(int id);
+
+        // カテゴリの更新
+        Task<bool> UpdateCategoryAsync(Category category);
+
+        // カテゴリの削除
+        Task<bool> DeleteCategoryAsync(int id);
     }
 }

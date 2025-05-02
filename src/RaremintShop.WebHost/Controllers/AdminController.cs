@@ -31,10 +31,10 @@ namespace RaremintShop.WebHost.Controllers
         /// <param name="logger">ロギングのためのILogger</param>
         public AdminController(IUserService userService, IProductService productService, ICategoryService categoryService, ILogger<AdminController> logger)
         {
-            _userService = userService;
-            _productService = productService;
-            _categoryService = categoryService;
-            _logger = logger;
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _productService = productService ?? throw new ArgumentNullException(nameof(productService));
+            _categoryService = categoryService ?? throw new ArgumentNullException(nameof(categoryService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
 
@@ -175,36 +175,15 @@ namespace RaremintShop.WebHost.Controllers
         [HttpGet]
         public async Task<IActionResult> ProductManagement()
         {
-            try
-            {
-                var products = await _productService.GetAllProductsAsync();
-                return View(products);
-            }
-            catch (Exception ex)
-            {
-                // エラーメッセージを表示
-                _logger.LogError(ex, ErrorMessages.ProductFetchError);
-                ModelState.AddModelError(string.Empty, ErrorMessages.ProductFetchError);
-                return View(new List<CatalogViewModel>());
-            }
+            var products = await _productService.GetAllProductsAsync();
+            return View(products);
         }
 
         [HttpGet]
         public async Task<IActionResult> CategoryManagement()
         {
-            try
-            {
-                var categories = await _categoryService.GetAllCategoriesAsync();
-                return View(categories);
-            }
-            catch (Exception ex)
-            {
-                // エラーメッセージを表示
-                _logger.LogError(ex, ErrorMessages.CategoryFetchError);
-                ModelState.AddModelError(string.Empty, ErrorMessages.CategoryFetchError);
-                return View(new List<Category>());
-            }
-
+            var categories = await _categoryService.GetAllCategoriesAsync();
+            return View(categories);
         }
     }
 }

@@ -1,8 +1,9 @@
 ﻿@model RaremintShop.Module.Catalog.Models.ProductRegisterViewModel
 
 @{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml"; // 管理者用レイアウトを指定
     ViewBag.Title = "商品登録";
-}
+ }
 
 <div class="container mt-5">
     <h2 class="text-center mb-4">商品登録</h2>
@@ -10,8 +11,8 @@
     <div class="row justify-content-center">
         <div class="col-12 col-md-8 col-lg-6">
             <form asp-action="Register" method="post" enctype="multipart/form-data" class="shadow p-4 rounded bg-light">
-                @Html.AntiForgeryToken()
-
+                @Html.AntiForgeryToken() <!-- CSRF 対策 -->
+                <!-- エラーメッセージの表示 -->
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                 <!-- 商品名 -->
@@ -64,8 +65,11 @@
                     <span asp-validation-for="Images" class="text-danger"></span>
                 </div>
 
+
+                <!-- 追加ボタンとキャンセルボタン -->
                 <div class="text-center">
-                    <button type="submit" class="btn btn-primary">登録</button>
+                    <button type="submit" class="btn btn-primary">追加</button>
+                    <a asp-controller="Admin" asp-action="ProductManagement" class="btn btn-secondary">キャンセル</a>
                 </div>
             </form>
         </div>

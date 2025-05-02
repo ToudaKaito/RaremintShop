@@ -17,8 +17,8 @@ namespace RaremintShop.Module.Catalog.Models
         public decimal Price { get; set; }
 
         [Range(0, int.MaxValue)]
-        public int StockQuantity { get; set; }
+        public int Stock { get; set; }
 
-        public List<string> ImageUrls { get; set; } = new List<string>();
+        public List<string> ImageUrls { get; set; } = [];
     }
 }

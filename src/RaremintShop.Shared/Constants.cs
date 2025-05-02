@@ -26,6 +26,17 @@
             public const string FileExtensionMissingError = "ファイルに拡張子がありません。";
             public const string FileFormatNotAllowedError = "許可されていないファイル形式です。";
 
+            // 共通メッセージ
+            public const string DuplicateName = "同じ名前が既に存在します。";
+            public const string BusinessException = "業務例外が発生しました。";
+            public const string RegisterError = "登録に失敗しました。";
+            public const string UpdateError = "更新に失敗しました。";
+            public const string NotFoundError = "指定されたデータが見つかりません。";
+            public const string InvalidIdError = "IDは0より大きい値である必要があります。";
+            public const string DeleteSuccess = "削除に成功しました。";
+            public const string DeleteError = "削除に失敗しました。";
+
+
         }
 
         public static class  Roles

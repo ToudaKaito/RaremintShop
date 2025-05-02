@@ -1,17 +1,30 @@
 ﻿@model RaremintShop.Module.Catalog.Models.Category
 
 @{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml"; // 管理者用レイアウトを指定
     ViewBag.Title = "カテゴリ追加";
 }
 
 <div class="container mt-5">
-    <h1 class="text-center mb-5">カテゴリ追加</h1>
+    <h2 class="text-center mb-4">カテゴリ追加</h2>
 
-    <form asp-action="Register" method="post">
-        <div class="form-group">
-            <label for="name">カテゴリ名</label>
-            <input type="text" class="form-control" id="name" name="Name" required />
+    <!-- カテゴリ追加フォーム -->
+    <form asp-action="Register" method="post" class="shadow p-4 rounded bg-light">
+        @Html.AntiForgeryToken() <!-- CSRF 対策 -->
+        <!-- エラーメッセージの表示 -->
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <!-- カテゴリ名入力 -->
+        <div class="form-group mb-3">
+            <label asp-for="Name" class="form-label">カテゴリ名</label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span> <!-- バリデーションエラー表示 -->
         </div>
-        <button type="submit" class="btn btn-primary">追加</button>
+
+        <!-- 追加ボタンとキャンセルボタン -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">追加</button>
+            <a asp-controller="Admin" asp-action="CategoryManagement" class="btn btn-secondary">キャンセル</a>
+        </div>
     </form>
 </div>

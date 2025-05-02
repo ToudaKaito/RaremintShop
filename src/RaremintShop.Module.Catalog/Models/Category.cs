@@ -8,7 +8,7 @@ namespace RaremintShop.Module.Catalog.Models
         [Key]
         public int Id { get; set; }  // 主キー
 
-        [Required]
+        [Required(ErrorMessage = "カテゴリ名は必須です。")]
         [MaxLength(50)]
         public string Name { get; set; } = string.Empty;  // カテゴリ名
 

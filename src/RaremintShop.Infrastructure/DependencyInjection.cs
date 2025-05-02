@@ -2,8 +2,6 @@
 using RaremintShop.Infrastructure.Repositories;
 using RaremintShop.Infrastructure.Services;
 using RaremintShop.Module.Catalog.Repositories;
-//using RaremintShop.Module.Core.Repositories;
-using RaremintShop.Module.Orders.Repositories;
 using RaremintShop.Shared.Services;
 
 namespace RaremintShop.Infrastructure
@@ -21,8 +19,6 @@ namespace RaremintShop.Infrastructure
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
             // リポジトリを登録
-            services.AddScoped<IOrderRepository, OrderRepository>();
-            services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
 

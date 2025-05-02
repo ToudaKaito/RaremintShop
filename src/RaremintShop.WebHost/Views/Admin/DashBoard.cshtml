@@ -1,36 +1,9 @@
 ﻿@{
-    ViewBag.Title = "管理者用ページ";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml"; // 管理者用レイアウトを指定
+    ViewBag.Title = "管理者ダッシュボード";
 }
 
 <div class="container mt-5">
     <h1 class="text-center mb-5">管理者ダッシュボード</h1>
-
-    <div class="row justify-content-center">
-        <!-- ユーザー管理ページへのリンク -->
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-sm">
-                <a asp-controller="Admin" asp-action="UserManagement" class="btn btn-primary btn-block">
-                    ユーザー管理ページ
-                </a>
-            </div>
-        </div>
-
-        <!-- 商品管理ページへのリンク -->
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-sm">
-                <a asp-controller="Admin" asp-action="ProductManagement" class="btn btn-primary btn-block">
-                    商品管理ページ
-                </a>
-            </div>
-            
-        </div>
-
-        <!-- 詳細を見るリンク（仮） -->
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-sm">
-                <a href="#" class="btn btn-primary">詳細を見る</a>
-            </div>
-        </div>
-      
-    </div>
+    <p class="text-center">管理者メニューから操作を選択してください。</p>
 </div>

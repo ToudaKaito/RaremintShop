@@ -29,8 +29,8 @@ namespace RaremintShop.WebHost.Controllers
         {
             try
             {
-                var products = await _productService.GetAllProductsAsync();
-                return View(products);
+                //var products = await _productService.GetAllProductsAsync();
+                return View(/*products*/);
             }
             catch (Exception ex)
             {
@@ -77,16 +77,17 @@ namespace RaremintShop.WebHost.Controllers
 
             try
             {
-                var result = await _productService.RegisterProductAsync(model);
+                //var result = await _productService.RegisterProductAsync(model);
 
-                if (result)
-                {
-                    return RedirectToAction(RedirectPaths.AdminProductManagement, RedirectPaths.AdminController);
-                }
-                else
-                {
-                    return View(model);
-                }
+                //if (result)
+                //{
+                //    return RedirectToAction(RedirectPaths.AdminProductManagement, RedirectPaths.AdminController);
+                //}
+                //else
+                //{
+                //    return View(model);
+                //}
+                return View();
             }
             catch (Exception ex)
             {
