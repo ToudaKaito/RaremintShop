@@ -5,6 +5,7 @@ using RaremintShop.Module.Catalog.Models;
 using static RaremintShop.Shared.Constants;
 using RaremintShop.Module.Identity.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using RaremintShop.Shared.Exceptions;
 
 namespace RaremintShop.WebHost.Controllers
 {
@@ -44,23 +45,13 @@ namespace RaremintShop.WebHost.Controllers
         [HttpGet]
         public async Task<IActionResult> Register()
         {
-            try
-            {
-                var categories = await _categoryService.GetAllCategoriesAsync();
+            var categories = await _categoryService.GetAllCategoriesAsync();
 
-                var viewModel = new ProductRegisterViewModel
-                {
-                    CategoryList = new SelectList(categories, "Id", "Name")
-                };
-                return View(viewModel);
-            }
-            catch (Exception ex)
+            var viewModel = new ProductRegisterViewModel
             {
-                // エラーメッセージを表示
-                _logger.LogError(ex, ErrorMessages.CategoryFetchError);
-                ModelState.AddModelError(string.Empty, ErrorMessages.CategoryFetchError);
-                return View(new ProductRegisterViewModel());
-            }
+                CategoryList = new SelectList(categories, "Id", "Name")
+            };
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -77,23 +68,27 @@ namespace RaremintShop.WebHost.Controllers
 
             try
             {
-                //var result = await _productService.RegisterProductAsync(model);
+                // 商品登録処理を実行
+                var result = await _productService.RegisterProductAsync(model);
 
-                //if (result)
-                //{
-                //    return RedirectToAction(RedirectPaths.AdminProductManagement, RedirectPaths.AdminController);
-                //}
-                //else
-                //{
-                //    return View(model);
-                //}
-                return View();
+                if (result)
+                {
+                    // 登録成功時、商品管理ページにリダイレクト
+                    TempData["SuccessMessage"] = ErrorMessages.RegisterSuccess;
+                    return RedirectToAction(RedirectPaths.AdminProductManagement, RedirectPaths.AdminController);
+                }
+                else
+                {
+                    // 登録失敗時、エラーメッセージを表示
+                    ModelState.AddModelError(string.Empty, ErrorMessages.RegisterError);
+                    return View(model);
+                }
             }
-            catch (Exception ex)
+            catch (BusinessException ex)
             {
-                // エラーメッセージを表示
-                _logger.LogError(ex, ErrorMessages.ProductRegisterError);
-                ModelState.AddModelError(string.Empty, ErrorMessages.ProductRegisterError);
+                // 業務例外をキャッチして処理
+                _logger.LogWarning(ex, "{BusinessException} ExceptionMessage: {ExceptionMessage}", ErrorMessages.BusinessException, ex.Message);
+                ModelState.AddModelError(string.Empty, ex.Message); // ユーザー向けのエラーメッセージを設定
                 return View(model);
             }
         }

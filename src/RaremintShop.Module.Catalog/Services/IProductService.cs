@@ -11,11 +11,7 @@ namespace RaremintShop.Module.Catalog.Services
         // 全商品取得
         Task<List<CatalogViewModel>> GetAllProductsAsync();
 
-
-
-
-
         // 商品の登録
-        //Task<bool> RegisterProductAsync(ProductRegisterViewModel model);
+        Task<bool> RegisterProductAsync(ProductRegisterViewModel model);
     }
 }

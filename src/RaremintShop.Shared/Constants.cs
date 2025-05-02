@@ -29,6 +29,7 @@
             // 共通メッセージ
             public const string DuplicateName = "同じ名前が既に存在します。";
             public const string BusinessException = "業務例外が発生しました。";
+            public const string RegisterSuccess = "登録に成功しました。";
             public const string RegisterError = "登録に失敗しました。";
             public const string UpdateError = "更新に失敗しました。";
             public const string NotFoundError = "指定されたデータが見つかりません。";
