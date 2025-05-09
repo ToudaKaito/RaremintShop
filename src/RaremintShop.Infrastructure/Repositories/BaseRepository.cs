@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RaremintShop.Module.Core.Interface;
+using RaremintShop.Core.Interfaces.Repositories;
 
 namespace RaremintShop.Infrastructure.Repositories
 {

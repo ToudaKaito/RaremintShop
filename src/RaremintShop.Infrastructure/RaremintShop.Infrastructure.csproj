@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Routing" Version="2.3.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10">
@@ -21,10 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RaremintShop.Module.Catalog\RaremintShop.Module.Catalog.csproj" />
-    <ProjectReference Include="..\RaremintShop.Module.Core\RaremintShop.Module.Core.csproj" />
-    <ProjectReference Include="..\RaremintShop.Module.Identity\RaremintShop.Module.Identity.csproj" />
-    <ProjectReference Include="..\RaremintShop.Module.Orders\RaremintShop.Module.Orders.csproj" />
+    <ProjectReference Include="..\..\RaremintShop.Core\RaremintShop.Core.csproj" />
     <ProjectReference Include="..\RaremintShop.Shared\RaremintShop.Shared.csproj" />
   </ItemGroup>
 

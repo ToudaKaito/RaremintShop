@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RaremintShop.Module.Catalog.Data;
-using RaremintShop.Module.Catalog.Models;
-using RaremintShop.Module.Catalog.Repositories;
+using RaremintShop.Core.Interfaces.Repositories;
+using RaremintShop.Core.Models;
+using RaremintShop.Infrastructure.Data;
 
 namespace RaremintShop.Infrastructure.Repositories
 {
@@ -14,7 +14,7 @@ namespace RaremintShop.Infrastructure.Repositories
         /// コンストラクタ。データベースコンテキストを受け取ります。
         /// </summary>
         /// <param name="context">データベースコンテキスト</param>
-        public ProductRepository(CatalogDbContext context) : base(context)
+        public ProductRepository(ApplicationDbContext context) : base(context)
         {
         }
 

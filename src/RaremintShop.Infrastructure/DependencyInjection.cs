@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using RaremintShop.Core.Interfaces.Repositories;
 using RaremintShop.Infrastructure.Repositories;
 using RaremintShop.Infrastructure.Services;
-using RaremintShop.Module.Catalog.Repositories;
 using RaremintShop.Shared.Services;
 
 namespace RaremintShop.Infrastructure

@@ -14,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RaremintShop.Module.Identity\RaremintShop.Module.Identity.csproj" />
     <ProjectReference Include="..\RaremintShop.WebHost\RaremintShop.WebHost.csproj" />
   </ItemGroup>
 

@@ -1,13 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RaremintShop.Module.Catalog.Data;
-using RaremintShop.Module.Catalog.Models;
-using RaremintShop.Module.Catalog.Repositories;
+﻿using RaremintShop.Core.Interfaces.Repositories;
+using RaremintShop.Core.Models;
+using RaremintShop.Infrastructure.Data;
 
 namespace RaremintShop.Infrastructure.Repositories
 {
     public class CategoryRepository : BaseRepository<Category>, ICategoryRepository
     {
-        public CategoryRepository(CatalogDbContext context) : base(context)
+        public CategoryRepository(ApplicationDbContext context) : base(context)
         {
         }
     }

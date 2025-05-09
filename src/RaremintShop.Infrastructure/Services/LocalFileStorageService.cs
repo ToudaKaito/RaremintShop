@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using RaremintShop.Shared.Services;
+﻿using RaremintShop.Shared.Services;
 using static RaremintShop.Shared.Constants;
 
 namespace RaremintShop.Infrastructure.Services

@@ -19,11 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\RaremintShop.Core\RaremintShop.Core.csproj" />
     <ProjectReference Include="..\RaremintShop.Infrastructure\RaremintShop.Infrastructure.csproj" />
-    <ProjectReference Include="..\RaremintShop.Module.Catalog\RaremintShop.Module.Catalog.csproj" />
-    <ProjectReference Include="..\RaremintShop.Module.Core\RaremintShop.Module.Core.csproj" />
-    <ProjectReference Include="..\RaremintShop.Module.Identity\RaremintShop.Module.Identity.csproj" />
-    <ProjectReference Include="..\RaremintShop.Module.Orders\RaremintShop.Module.Orders.csproj" />
     <ProjectReference Include="..\RaremintShop.Shared\RaremintShop.Shared.csproj" />
   </ItemGroup>
 
