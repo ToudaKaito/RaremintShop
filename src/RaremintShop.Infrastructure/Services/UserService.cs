@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using RaremintShop.Module.Identity.Models;
-using Microsoft.Extensions.Logging;
 using static RaremintShop.Shared.Constants;
+using RaremintShop.Core.DTOs;
 
 namespace RaremintShop.Infrastructure.Services
 {
@@ -43,9 +42,9 @@ namespace RaremintShop.Infrastructure.Services
         /// <param name="model">ユーザー登録のためのモデル</param>
         /// <returns>ユーザー登録の結果を表すIdentityResult</returns>
         /// <exception cref="ArgumentNullException">モデルがnullの場合にスローされます</exception>
-        public async Task<IdentityResult> RegisterUserAsync(UserRegisterViewModel model)
+        public async Task<IdentityResult> RegisterUserAsync(UserRegisterDto dto)
         {
-            ArgumentNullException.ThrowIfNull(model); // nullの場合は例外をスロー
+            ArgumentNullException.ThrowIfNull(); // nullの場合は例外をスロー
 
             try
             {

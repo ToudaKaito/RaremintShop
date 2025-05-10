@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RaremintShop.Core.DTOs;
 using RaremintShop.Module.Identity.Models;
 using RaremintShop.Module.Identity.Services;
+using RaremintShop.Shared.Exceptions;
 using static RaremintShop.Shared.Constants;
 
 namespace RaremintShop.WebHost.Controllers
@@ -53,31 +55,33 @@ namespace RaremintShop.WebHost.Controllers
                 return View(model);
             }
 
-            // <登録処理>
+            // <DTOへの変換>
+            var dto = new UserRegisterDto
+            {
+                Email = model.Email,
+                Password = model.Password
+            };
+
             try
             {
-                // ユーザー登録処理を非同期で呼び出し
-                var result = await _userService.RegisterUserAsync(model);
+                // <サービス呼び出し>
+                var result = await _userService.RegisterUserAsync(dto);
 
-                if (result.Succeeded) // 登録成功:指定のページにダイレクト
+                if (result)
                 {
                     return RedirectToAction(RedirectPaths.CatalogIndex, RedirectPaths.CatalogController);
                 }
-                else // 登録失敗:エラーメッセージを設定して再度ビューを表示
+                else
                 {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
-
+                    // TODO: エラーメッセージどうするか。まずここに入るときってどんな時？
                     return View(model);
                 }
             }
-            catch (Exception ex)
+            catch (BusinessException ex)
             {
-                // 例外が発生した場合の処理
-                _logger.LogError(ex, ErrorMessages.UserRegisterError);
-                ModelState.AddModelError(string.Empty, ErrorMessages.UserRegisterError);
+                // 業務例外をキャッチして処理
+                _logger.LogWarning(ex, "BusinessException occurred: {Message}", ex.Message);
+                ModelState.AddModelError(string.Empty, ex.Message); // ユーザー向けのエラーメッセージを設定
                 return View(model);
             }
         }

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using RaremintShop.Module.Identity.Models;
+﻿using RaremintShop.Core.DTOs;
 
 namespace RaremintShop.Module.Identity.Services
 {
@@ -9,7 +8,7 @@ namespace RaremintShop.Module.Identity.Services
     public interface IUserService
     {
         // ユーザー管理
-        Task<IdentityResult> RegisterUserAsync(UserRegisterViewModel model);
+        Task<bool> RegisterUserAsync(UserRegisterDto dto);
         Task<SignInResult> LoginAsync(UserLoginViewModel model);
         Task LogoutAsync();
         Task<IdentityResult> DeleteUserAsync(IdentityUser user);
