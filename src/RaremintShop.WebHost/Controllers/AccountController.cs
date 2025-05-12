@@ -65,22 +65,15 @@ namespace RaremintShop.WebHost.Controllers
             try
             {
                 // <サービス呼び出し>
-                var result = await _userService.RegisterUserAsync(dto);
+                // 基本的にはエラーの場合はcatchで処理する
+                await _userService.RegisterUserAsync(dto);
 
-                if (result)
-                {
-                    return RedirectToAction(RedirectPaths.CatalogIndex, RedirectPaths.CatalogController);
-                }
-                else
-                {
-                    // TODO: エラーメッセージどうするか。まずここに入るときってどんな時？
-                    return View(model);
-                }
+                return RedirectToAction(RedirectPaths.CatalogIndex, RedirectPaths.CatalogController);
             }
             catch (BusinessException ex)
             {
                 // 業務例外をキャッチして処理
-                _logger.LogWarning(ex, "BusinessException occurred: {Message}", ex.Message);
+                _logger.LogWarning(ex, "{BusinessException} ExceptionMessage: {ExceptionMessage}", ErrorMessages.BusinessException, ex.Message);
                 ModelState.AddModelError(string.Empty, ex.Message); // ユーザー向けのエラーメッセージを設定
                 return View(model);
             }
@@ -113,43 +106,36 @@ namespace RaremintShop.WebHost.Controllers
                 return View(model);
             }
 
-            // <ログイン処理>
+            // <DTOへの変換>
+            var dto = new UserLoginDto
+            {
+                Email = model.Email,
+                Password = model.Password
+            };
+
             try
             {
-                // ユーザーログイン処理を非同期で呼び出し
-                var result = await _userService.LoginAsync(model);
+                // <サービス呼び出し>
+                // 基本的にはエラーの場合はcatchで処理する
+                var userId = await _userService.LoginAsync(dto);
 
-                if (result.Succeeded) // ログイン成功:ロールによってリダイレクト先を変更
+
+                var roles = await _userService.GetRolesAsync(userId);
+
+                if (roles.Contains(Roles.Admin))
                 {
-                    var user = await _userService.GetByEmailAsync(model.Email);
-                    if (user == null) // 基本的にはありえないが、念のためのチェック
-                    {
-                        ModelState.AddModelError(string.Empty, ErrorMessages.UserNotFound);
-                        return View(model);
-                    }
-
-                    var roles = await _userService.GetRolesAsync(user);
-
-                    if (roles.Contains(Roles.Admin))
-                    {
-                        return RedirectToAction(RedirectPaths.AdminDashboard, RedirectPaths.AdminController);
-                    }
-                    else
-                    {
-                        return RedirectToAction(RedirectPaths.CatalogIndex, RedirectPaths.CatalogController);
-                    }
+                    return RedirectToAction(RedirectPaths.AdminDashboard, RedirectPaths.AdminController);
                 }
-                else // ログイン失敗:エラーメッセージを設定して再度ビューを表示
+                else
                 {
-                    ModelState.AddModelError(string.Empty, ErrorMessages.InvalidLogin);
-                    return View(model);
+                    return RedirectToAction(RedirectPaths.CatalogIndex, RedirectPaths.CatalogController);
                 }
             }
-            catch (Exception ex)
+            catch (BusinessException ex)
             {
-                // 例外が発生した場合の処理
-                _logger.LogError(ex, ErrorMessages.UserLoginError);
-                ModelState.AddModelError(string.Empty, ErrorMessages.UserLoginError);
+                // 業務例外をキャッチして処理
+                _logger.LogWarning(ex, "{BusinessException} ExceptionMessage: {ExceptionMessage}", ErrorMessages.BusinessException, ex.Message);
+                ModelState.AddModelError(string.Empty, ex.Message); // ユーザー向けのエラーメッセージを設定
                 return View(model);
             }
         }

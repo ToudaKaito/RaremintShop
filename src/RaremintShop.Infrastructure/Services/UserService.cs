@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using static RaremintShop.Shared.Constants;
 using RaremintShop.Core.DTOs;
+using RaremintShop.Shared.Exceptions;
+using static RaremintShop.Shared.Constants;
 
 namespace RaremintShop.Infrastructure.Services
 {
@@ -37,43 +38,55 @@ namespace RaremintShop.Infrastructure.Services
 
 
         /// <summary>
-        /// 新しいユーザーを登録します。
+        /// ユーザー登録処理
         /// </summary>
-        /// <param name="model">ユーザー登録のためのモデル</param>
-        /// <returns>ユーザー登録の結果を表すIdentityResult</returns>
-        /// <exception cref="ArgumentNullException">モデルがnullの場合にスローされます</exception>
-        public async Task<IdentityResult> RegisterUserAsync(UserRegisterDto dto)
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        /// <exception cref="BusinessException"></exception>
+        public async Task RegisterUserAsync(UserRegisterDto dto)
         {
-            ArgumentNullException.ThrowIfNull(); // nullの場合は例外をスロー
+            ArgumentNullException.ThrowIfNull(dto, nameof(dto)); // nullの場合は例外をスロー
 
-            try
+            // メールアドレスの重複チェック
+            var existingUserByEmail = await _userManager.FindByEmailAsync(dto.Email);
+            if (existingUserByEmail != null)
             {
-                var user = new IdentityUser
-                {
-                    UserName = model.Email,
-                    Email = model.Email,
-                };
-
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if(!result.Succeeded)
-                {
-                    return result;
-                }
-
-                // ユーザーにロールを割り当て
-                var roleResult = await _userManager.AddToRoleAsync(user, Roles.User);
-                if (!roleResult.Succeeded)
-                {
-                    // ロールの割り当てに失敗した場合、ユーザーを削除
-                    await _userManager.DeleteAsync(user);
-                    return roleResult;
-                }
-
-                return result;
+                throw new BusinessException(ErrorMessages.DuplicateEmail);
             }
-            catch
+
+            // dto→IdentityUser変換
+            var user = new IdentityUser
             {
-                throw;
+                UserName = dto.Email,
+                Email = dto.Email,
+            };
+
+            // ユーザーの作成
+            var createResult = await _userManager.CreateAsync(user, dto.Password);
+            if (!createResult.Succeeded)
+            {
+                // debug用
+                foreach (var error in createResult.Errors)
+                {
+                    Console.WriteLine($"Error: {error.Description}");
+                }
+
+                throw new BusinessException(ErrorMessages.RegisterError); // 登録失敗
+            }
+
+            // ユーザーにロールを割り当て
+            var roleResult = await _userManager.AddToRoleAsync(user, Roles.User);
+            if (!roleResult.Succeeded)
+            {
+                // debug用
+                foreach (var error in roleResult.Errors)
+                {
+                    Console.WriteLine($"Error: {error.Description}");
+                }
+
+                // ロールの割り当てに失敗した場合、ユーザーを削除
+                await _userManager.DeleteAsync(user);
+                throw new BusinessException(ErrorMessages.RegisterError); // 登録失敗
             }
         }
 
@@ -84,25 +97,25 @@ namespace RaremintShop.Infrastructure.Services
         /// <param name="model">ユーザーログインのためのモデル</param>
         /// <returns>ログインの結果を表すSignInResult</returns>
         /// <exception cref="ArgumentNullException">モデルがnullの場合にスローされます</exception>
-        public async Task<SignInResult> LoginAsync(UserLoginViewModel model)
+        public async Task<string> LoginAsync(UserLoginDto dto)
         {
-            ArgumentNullException.ThrowIfNull(model); // nullの場合は例外をスロー
+            ArgumentNullException.ThrowIfNull(dto, nameof(dto)); // nullの場合は例外をスロー
 
-            try
+            // ユーザーの存在確認
+            var user = await _userManager.FindByEmailAsync(dto.Email);
+            if(user == null)
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user == null)
-                {
-                    return SignInResult.Failed; // ユーザーが存在しない
-                }
+                throw new BusinessException(ErrorMessages.InvalidLogin);
+            }
 
-                var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
-                return result;
-            }
-            catch
+            // パスワードサインイン
+            var result = await _signInManager.PasswordSignInAsync(user, dto.Password, isPersistent: false, lockoutOnFailure: false);
+            if (!result.Succeeded)
             {
-                throw;
+                throw new BusinessException(ErrorMessages.InvalidLogin);
             }
+
+            return user.Id;
         }
 
 
@@ -229,9 +242,23 @@ namespace RaremintShop.Infrastructure.Services
         /// </summary>
         /// <param name="email">メールアドレス</param>
         /// <returns>ユーザー,見つからなければnullか空のIdentityUser</returns>
-        public async Task<IdentityUser?> GetByEmailAsync(string email)
+        public async Task<> GetByEmailAsync(string email)
         {
-            ArgumentNullException.ThrowIfNull(email);
+            ArgumentNullException.ThrowIfNull(email, nameof(email)); // nullの場合は例外をスロー
+
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                throw new BusinessException(ErrorMessages.UserNotFound);
+            }
+
+            // dto→IdentityUser変換
+            var userLoginDto = new UserLoginDto
+            {
+                Email = user.Email,
+                Password = user.PasswordHash
+            };
+
 
             try
             {

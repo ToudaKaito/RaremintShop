@@ -5,7 +5,7 @@
         public static class  ErrorMessages
         {
             public const string UnexpectedError = "予期しないエラーが発生しました。";
-            public const string InvalidLogin = "メールアドレスまたはパスワードが正しくありません。";
+            
             public const string UserNotFound = "ユーザーが見つかりません。";
             public const string UserFetchError = "ユーザー情報の取得中にエラーが発生しました。";
             public const string UserUpdateError = "ユーザー情報の更新中にエラーが発生しました。";
@@ -28,6 +28,7 @@
 
             // 共通メッセージ
             public const string DuplicateName = "同じ名前が既に存在します。";
+            public const string DuplicateEmail = "同じメールアドレスが既に存在します。";
             public const string BusinessException = "業務例外が発生しました。";
             public const string RegisterSuccess = "登録に成功しました。";
             public const string RegisterError = "登録に失敗しました。";
@@ -37,6 +38,8 @@
             public const string DeleteSuccess = "削除に成功しました。";
             public const string DeleteError = "削除に失敗しました。";
 
+            // ログインメッセージ
+            public const string InvalidLogin = "メールアドレスまたはパスワードが正しくありません。";
 
         }
 
