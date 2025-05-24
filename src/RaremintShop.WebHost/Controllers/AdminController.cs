@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RaremintShop.Module.Identity.Models;
-using RaremintShop.Module.Identity.Services;
+using RaremintShop.Core.DTOs;
+using RaremintShop.Core.Interfaces.Services;
+using RaremintShop.Shared.Exceptions;
+using RaremintShop.WebHost.Models;
 using static RaremintShop.Shared.Constants;
-using System.Diagnostics;
-using RaremintShop.Module.Catalog.Models;
-using RaremintShop.Module.Catalog.Services;
 
 namespace RaremintShop.WebHost.Controllers
 {
@@ -56,14 +55,26 @@ namespace RaremintShop.WebHost.Controllers
         {
             try
             {
+                var userManagementViewModels = new List<UserManagementViewModel>();
                 var users = await _userService.GetAllUsersAsync();
-                return View(users);
+
+                foreach(var user in users)
+                {
+                    userManagementViewModels.Add(new UserManagementViewModel
+                    {
+                        Id = user.Id,
+                        UserName = user.UserName,
+                        Email = user.Email,
+                        Role = user.Role,
+                    });
+                }
+                return View(userManagementViewModels);
             }
-            catch (Exception ex)
+            catch (BusinessException ex)
             {
-                // エラーメッセージを表示
-                _logger.LogError(ex, ErrorMessages.UserFetchError);
-                ModelState.AddModelError(string.Empty, ErrorMessages.UserFetchError);
+                // 業務例外をキャッチして処理
+                _logger.LogWarning(ex, "{BusinessException} ExceptionMessage: {ExceptionMessage}", ErrorMessages.BusinessException, ex.Message);
+                ModelState.AddModelError(string.Empty, ex.Message); // ユーザー向けのエラーメッセージを設定
                 return View(new List<UserManagementViewModel>());
             }
         }
@@ -78,18 +89,25 @@ namespace RaremintShop.WebHost.Controllers
         {
             try
             {
-                var user = await _userService.GetByIdForEditAsync(id);
-                if (user == null)
+                var user = await _userService.GetByIdAsync(id);
+                var roles = await _userService.GetRolesAsync(user.Id);
+
+                // UsrDto→UserEditViewModelに変換
+                var userEditViewModel = new UserEditViewModel
                 {
-                    return NotFound();
-                }
-                return View(user);
+                    Id = user.Id,
+                    UserName = user.UserName ?? string.Empty,
+                    Email = user.Email ?? string.Empty,
+                    Role = roles.FirstOrDefault() ?? string.Empty,
+                    IsActive = user.IsActive,
+                };
+                return View(userEditViewModel);
             }
-            catch (Exception ex)
+            catch (BusinessException ex)
             {
-                // エラーメッセージを表示
-                _logger.LogError(ex, ErrorMessages.UserFetchError);
-                ModelState.AddModelError(string.Empty, ErrorMessages.UserFetchError);
+                // 業務例外をキャッチして処理
+                _logger.LogWarning(ex, "{BusinessException} ExceptionMessage: {ExceptionMessage}", ErrorMessages.BusinessException, ex.Message);
+                ModelState.AddModelError(string.Empty, ex.Message); // ユーザー向けのエラーメッセージを設定
                 return RedirectToAction(RedirectPaths.AdminUserManagement, RedirectPaths.AdminController);
             }
         }
@@ -105,42 +123,37 @@ namespace RaremintShop.WebHost.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(UserEditViewModel model)
         {
+            // <バリデーション処理>
             if (!ModelState.IsValid)
             {
-                // ModelState のエラーメッセージをコンソールに出力
-                foreach (var state in ModelState)
-                {
-                    foreach (var error in state.Value.Errors)
-                    {
-                        Console.WriteLine($"キー: {state.Key}, エラーメッセージ: {error.ErrorMessage}");
-                    }
-                }
-
-                var roles = await _userService.GetAllRolesAsync();
-                model.AvailableRoles = roles.Select(x => x.Name!).ToList();
                 return View(model);
             }
+
+            // <DTOへの変換>
+            var dto = new UserDto
+            {
+                Id = model.Id,
+                UserName = model.UserName,
+                Email = model.Email,
+                Role = model.Role,
+                IsActive = model.IsActive,
+            };
 
             try
             {
-                var result = await _userService.UpdateUserAsync(model);
-                if (result.Succeeded)
-                {
-                    return RedirectToAction(RedirectPaths.AdminUserManagement, RedirectPaths.AdminController);
-                }
-                else
-                {
-                    // エラーメッセージを表示
-                    ModelState.AddModelError(string.Empty, ErrorMessages.UserUpdateError);
-                    return View(model);
-                }
+                // <サービス呼び出し>
+                // 基本的にはエラーの場合はcatchで処理する
+                await _userService.UpdateUserAsync(dto);
+
+                return RedirectToAction(RedirectPaths.AdminUserManagement, RedirectPaths.AdminController);
             }
-            catch (Exception ex)
+            catch (BusinessException ex)
             {
-                _logger.LogError(ex, ErrorMessages.UserUpdateError);
-                ModelState.AddModelError(string.Empty, ErrorMessages.UserUpdateError);
-                return View(model);
-            }
+                // 業務例外をキャッチして処理
+                _logger.LogWarning(ex, "{BusinessException} ExceptionMessage: {ExceptionMessage}", ErrorMessages.BusinessException, ex.Message);
+                ModelState.AddModelError(string.Empty, ex.Message); // ユーザー向けのエラーメッセージを設定
+                return RedirectToAction(RedirectPaths.AdminUserManagement, RedirectPaths.AdminController);
+            }        
         }
 
 
@@ -155,18 +168,17 @@ namespace RaremintShop.WebHost.Controllers
         {
             try
             {
-                var user = await _userService.GetByIdAsync(id);
-                if (user == null)
-                {
-                    return NotFound();
-                }
-                await _userService.DeleteUserAsync(user);
+                // <サービス呼び出し>
+                // 基本的にはエラーの場合はcatchで処理する
+                await _userService.DeleteUserAsync(id);
+
                 return RedirectToAction(RedirectPaths.AdminUserManagement, RedirectPaths.AdminController);
             }
-            catch (Exception ex)
+            catch (BusinessException ex)
             {
-                _logger.LogError(ex, ErrorMessages.UserDeleteError);
-                ModelState.AddModelError(string.Empty, ErrorMessages.UserDeleteError);
+                // 業務例外をキャッチして処理
+                _logger.LogWarning(ex, "{BusinessException} ExceptionMessage: {ExceptionMessage}", ErrorMessages.BusinessException, ex.Message);
+                ModelState.AddModelError(string.Empty, ex.Message); // ユーザー向けのエラーメッセージを設定
                 return RedirectToAction(RedirectPaths.AdminUserManagement, RedirectPaths.AdminController);
             }
         }
@@ -175,15 +187,45 @@ namespace RaremintShop.WebHost.Controllers
         [HttpGet]
         public async Task<IActionResult> ProductManagement()
         {
-            var products = await _productService.GetAllProductsAsync();
-            return View(products);
+            try
+            {
+                var products = await _productService.GetAllProductsAsync();
+            }
+            catch (BusinessException ex)
+            {
+                // 業務例外をキャッチして処理
+                _logger.LogWarning(ex, "{BusinessException} ExceptionMessage: {ExceptionMessage}", ErrorMessages.BusinessException, ex.Message);
+                ModelState.AddModelError(string.Empty, ex.Message); // ユーザー向けのエラーメッセージを設定
+                return RedirectToAction(RedirectPaths.AdminDashboard, RedirectPaths.AdminController);
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> CategoryManagement()
         {
-            var categories = await _categoryService.GetAllCategoriesAsync();
-            return View(categories);
+            try
+            {
+                var categories = await _categoryService.GetAllCategoriesAsync();
+
+                // ViewModelに変換
+                var categoryManagementViewModels = categories
+                    .Select(c => new CategoryManagementViewModel
+                    {
+                        Id = c.Id,
+                        Name = c.Name,
+                        CreatedAt = c.CreatedAt,
+                        UpdatedAt = c.UpdatedAt
+                    })
+                    .ToList();
+                return View(categoryManagementViewModels);
+            }
+            catch (BusinessException ex)
+            {
+                // 業務例外をキャッチして処理
+                _logger.LogWarning(ex, "{BusinessException} ExceptionMessage: {ExceptionMessage}", ErrorMessages.BusinessException, ex.Message);
+                ModelState.AddModelError(string.Empty, ex.Message); // ユーザー向けのエラーメッセージを設定
+                return RedirectToAction(RedirectPaths.AdminDashboard, RedirectPaths.AdminController);
+            }
         }
     }
 }

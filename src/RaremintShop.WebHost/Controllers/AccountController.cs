@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RaremintShop.Core.DTOs;
-using RaremintShop.Module.Identity.Models;
-using RaremintShop.Module.Identity.Services;
+using RaremintShop.WebHost.Models;
+using RaremintShop.Core.Interfaces.Services;
 using RaremintShop.Shared.Exceptions;
 using static RaremintShop.Shared.Constants;
 
@@ -56,7 +56,7 @@ namespace RaremintShop.WebHost.Controllers
             }
 
             // <DTOへの変換>
-            var dto = new UserRegisterDto
+            var dto = new UserDto
             {
                 Email = model.Email,
                 Password = model.Password
@@ -107,7 +107,7 @@ namespace RaremintShop.WebHost.Controllers
             }
 
             // <DTOへの変換>
-            var dto = new UserLoginDto
+            var dto = new UserDto
             {
                 Email = model.Email,
                 Password = model.Password
@@ -117,12 +117,9 @@ namespace RaremintShop.WebHost.Controllers
             {
                 // <サービス呼び出し>
                 // 基本的にはエラーの場合はcatchで処理する
-                var userId = await _userService.LoginAsync(dto);
+                var role = await _userService.LoginAsync(dto);
 
-
-                var roles = await _userService.GetRolesAsync(userId);
-
-                if (roles.Contains(Roles.Admin))
+                if (role.Contains(Roles.Admin))
                 {
                     return RedirectToAction(RedirectPaths.AdminDashboard, RedirectPaths.AdminController);
                 }
@@ -151,13 +148,16 @@ namespace RaremintShop.WebHost.Controllers
         {
             try
             {
+                // <サービス呼び出し>
+                // 基本的にはエラーの場合はcatchで処理する
                 await _userService.LogoutAsync();
                 return RedirectToAction(RedirectPaths.CatalogIndex, RedirectPaths.CatalogController);
             }
-            catch (Exception ex)
+            catch (BusinessException ex)
             {
-                _logger.LogError(ex, ErrorMessages.UserLogoutError);
-                ModelState.AddModelError(string.Empty, ErrorMessages.UserLogoutError);
+                // 業務例外をキャッチして処理
+                _logger.LogWarning(ex, "{BusinessException} ExceptionMessage: {ExceptionMessage}", ErrorMessages.BusinessException, ex.Message);
+                ModelState.AddModelError(string.Empty, ex.Message); // ユーザー向けのエラーメッセージを設定
                 return RedirectToAction(RedirectPaths.CatalogIndex, RedirectPaths.CatalogController);
             }
         }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using RaremintShop.Core.Interfaces.Repositories;
+using RaremintShop.Core.Interfaces.Services;
 using RaremintShop.Infrastructure.Repositories;
 using RaremintShop.Infrastructure.Services;
 using RaremintShop.Shared.Services;
@@ -24,6 +25,9 @@ namespace RaremintShop.Infrastructure
 
             // サービスを登録
             services.AddScoped<IFileStorageService, LocalFileStorageService>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IUserService, UserService>();
 
             return services;
         }

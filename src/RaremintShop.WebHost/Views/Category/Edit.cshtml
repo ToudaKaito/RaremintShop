@@ -1,4 +1,4 @@
-﻿@model RaremintShop.Module.Catalog.Models.Category
+﻿@model RaremintShop.WebHost.Models.CategoryEditViewModel
 
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml"; // 管理者用レイアウトを指定
@@ -14,6 +14,8 @@
 
         <!-- エラーメッセージの表示 -->
         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        @Html.HiddenFor(m => m.Id)
 
         <!-- カテゴリ名入力 -->
         <div class="form-group mb-3">

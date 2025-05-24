@@ -6,16 +6,12 @@
         {
             public const string UnexpectedError = "予期しないエラーが発生しました。";
             
-            public const string UserNotFound = "ユーザーが見つかりません。";
             public const string UserFetchError = "ユーザー情報の取得中にエラーが発生しました。";
-            public const string UserUpdateError = "ユーザー情報の更新中にエラーが発生しました。";
-            public const string UserDeleteError = "ユーザー削除中にエラーが発生しました。";
-            public const string UserRegisterError = "ユーザー登録中にエラーが発生しました。";
             public const string UserLoginError = "ユーザーログイン中にエラーが発生しました。";
-            public const string UserLogoutError = "ユーザーログアウト中にエラーが発生しました。";
+            
             public const string ProductFetchError = "商品の取得中にエラーが発生しました。";
             public const string CategoryFetchError = "カテゴリの取得中にエラーが発生しました。";
-            public const string CategoryRegisterError = "カテゴリ登録中にエラーが発生しました。";
+            
             public const string ProductRegisterError = "商品登録中にエラーが発生しました。";
 
             public const string FileSaveError = "ファイルの保存中にエラーが発生しました。";
@@ -40,6 +36,22 @@
 
             // ログインメッセージ
             public const string InvalidLogin = "メールアドレスまたはパスワードが正しくありません。";
+
+            // ユーザー系
+            public const string UserNotFound = "ユーザーが見つかりません。";
+            public const string UserRegisterError = "ユーザー登録に失敗しました。";
+            public const string UserLogoutError = "ユーザーのログアウトに失敗しました。";
+            public const string RoleDeleteError = "ロールの削除に失敗しました。";
+            public const string RoleChangeError = "ロールの変更に失敗しました。";
+            public const string RoleFetchError = "ロールの取得に失敗しました。";
+            public const string UserUpdateError = "ユーザーの更新に失敗しました。";
+            public const string UserDeleteError = "ユーザーの削除に失敗しました。";
+
+            // カテゴリ系
+            public const string CategoryNotFound = "カテゴリが見つかりません。";
+            public const string CategoryRegisterError = "カテゴリ登録に失敗しました。";
+            public const string CategoryUpdateError = "カテゴリの更新に失敗しました。";
+            public const string CategoryDeleteError = "カテゴリの削除に失敗しました。";
 
         }
 

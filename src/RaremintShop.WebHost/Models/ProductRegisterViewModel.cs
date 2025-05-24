@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
-namespace RaremintShop.Module.Catalog.Models
+namespace RaremintShop.WebHost.Models
 {
     public class ProductRegisterViewModel
     {

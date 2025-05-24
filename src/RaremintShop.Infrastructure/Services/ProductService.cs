@@ -1,6 +1,7 @@
 ﻿using RaremintShop.Core.Interfaces.Repositories;
 using RaremintShop.Core.Interfaces.Services;
 using RaremintShop.Core.Models;
+using RaremintShop.Core.DTOs;
 using RaremintShop.Shared.Services;
 
 namespace RaremintShop.Infrastructure.Services
@@ -21,7 +22,7 @@ namespace RaremintShop.Infrastructure.Services
 
 
         // 全商品取得
-        public async Task<List<CatalogViewModel>> GetAllProductsAsync()
+        public async Task<List<ProductDto>> GetAllProductsAsync()
         {
             var products = await _productRepository.GetAllAsync();
             return products.Select(p => new CatalogViewModel

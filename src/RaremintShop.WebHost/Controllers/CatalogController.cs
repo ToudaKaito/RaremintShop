@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using RaremintShop.Module.Catalog.Services;
-using RaremintShop.Module.Catalog.Models;
 using static RaremintShop.Shared.Constants;
-using RaremintShop.Module.Identity.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using RaremintShop.Shared.Exceptions;
+using RaremintShop.WebHost.Models;
+using RaremintShop.Core.DTOs;
+using RaremintShop.Core.Interfaces.Services;
 
 namespace RaremintShop.WebHost.Controllers
 {
@@ -66,29 +65,36 @@ namespace RaremintShop.WebHost.Controllers
                 return View(model);
             }
 
+            // <DTOへの変換>
+            var dto = new ProductDto
+            {
+                Name = model.Name,
+                Price = model.Price,
+                CategoryId = model.CategoryId,
+                Description = model.Description,
+                Stock = model.Stock,
+                IsPublished = model.IsPublished
+                // 画像は別で渡す
+            };
+
             try
             {
                 // 商品登録処理を実行
-                var result = await _productService.RegisterProductAsync(model);
+                var result = await _productService.RegisterProductAsync(dto, model.Images);
 
-                if (result)
-                {
-                    // 登録成功時、商品管理ページにリダイレクト
-                    TempData["SuccessMessage"] = ErrorMessages.RegisterSuccess;
-                    return RedirectToAction(RedirectPaths.AdminProductManagement, RedirectPaths.AdminController);
-                }
-                else
-                {
-                    // 登録失敗時、エラーメッセージを表示
-                    ModelState.AddModelError(string.Empty, ErrorMessages.RegisterError);
-                    return View(model);
-                }
+                // 登録成功時、商品管理ページにリダイレクト
+                TempData["SuccessMessage"] = ErrorMessages.RegisterSuccess;
+                return RedirectToAction(RedirectPaths.AdminProductManagement, RedirectPaths.AdminController);
             }
             catch (BusinessException ex)
             {
                 // 業務例外をキャッチして処理
                 _logger.LogWarning(ex, "{BusinessException} ExceptionMessage: {ExceptionMessage}", ErrorMessages.BusinessException, ex.Message);
-                ModelState.AddModelError(string.Empty, ex.Message); // ユーザー向けのエラーメッセージを設定
+                ModelState.AddModelError(string.Empty, ex.Message);
+
+                // カテゴリリスト再設定
+                var categories = await _categoryService.GetAllCategoriesAsync();
+                model.CategoryList = new SelectList(categories, "Id", "Name");
                 return View(model);
             }
         }

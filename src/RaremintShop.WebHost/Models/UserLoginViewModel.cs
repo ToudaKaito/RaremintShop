@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RaremintShop.Module.Identity.Models
+namespace RaremintShop.WebHost.Models
 {
     /// <summary>
     /// ユーザーログインのためのビューモデル

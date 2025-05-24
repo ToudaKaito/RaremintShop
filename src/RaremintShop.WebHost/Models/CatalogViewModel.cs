@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RaremintShop.Module.Catalog.Models
+namespace RaremintShop.WebHost.Models
 {
     public class CatalogViewModel
     {

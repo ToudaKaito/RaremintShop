@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RaremintShop.Module.Catalog.Models;
-using RaremintShop.Module.Catalog.Services;
+using RaremintShop.Core.DTOs;
+using RaremintShop.Core.Interfaces.Services;
 using RaremintShop.Shared.Exceptions;
+using RaremintShop.WebHost.Models;
 using static RaremintShop.Shared.Constants;
 
 namespace RaremintShop.WebHost.Controllers
@@ -27,37 +28,34 @@ namespace RaremintShop.WebHost.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken] // CSRF 対策
-        public async Task<IActionResult> Register(Category category)
+        public async Task<IActionResult> Register(CategoryRegisterViewModel model)
         {
             // <バリデーション処理>
             if (!ModelState.IsValid)
             {
                 // モデルが無効な場合、再度ビューを表示
-                return View(category);
+                return View(model);
             }
+
+            // <DTOへの変換>
+            var dto = new CategoryDto
+            {
+                Name = model.Name
+            };
 
             try
             {
-                // カテゴリ登録処理を実行
-                var result = await _categoryService.RegisterCategoryAsync(category);
-                if (result)
-                {
-                    // 登録成功時、カテゴリ管理ページにリダイレクト
-                    return RedirectToAction(RedirectPaths.AdminCategoryManagement, RedirectPaths.AdminController);
-                }
-                else
-                {
-                    // 登録失敗時、エラーメッセージを表示
-                    ModelState.AddModelError(string.Empty, ErrorMessages.RegisterError);
-                    return View(category);
-                }
+                await _categoryService.RegisterCategoryAsync(dto);
+
+                // 登録成功時、カテゴリ管理ページにリダイレクト
+                return RedirectToAction(RedirectPaths.AdminCategoryManagement, RedirectPaths.AdminController);
             }
             catch (BusinessException ex)
             {
                 // 業務例外をキャッチして処理
                 _logger.LogWarning(ex, "{BusinessException} ExceptionMessage: {ExceptionMessage}", ErrorMessages.BusinessException, ex.Message);
                 ModelState.AddModelError(string.Empty, ex.Message); // ユーザー向けのエラーメッセージを設定
-                return View(category);
+                return View(model);
             }
         }
 
@@ -67,6 +65,14 @@ namespace RaremintShop.WebHost.Controllers
             try
             {
                 var category = await _categoryService.GetCategoryByIdAsync(id);
+
+                // ViewModelに変換
+                var categoryViewModel = new CategoryEditViewModel
+                {
+                    Id = category.Id,
+                    Name = category.Name
+                };
+
                 return View(category);
             }
             catch (BusinessException ex)
@@ -81,38 +87,36 @@ namespace RaremintShop.WebHost.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken] // CSRF 対策
-        public async Task<IActionResult> Edit(Category category)
+        public async Task<IActionResult> Edit(CategoryEditViewModel model)
         {
             // <バリデーション処理>
             if (!ModelState.IsValid)
             {
                 // モデルが無効な場合、再度ビューを表示
-                return View(category);
+                return View(model);
             }
+
+            // <DTOへの変換> 
+            var categoryDto = new CategoryDto
+            {
+                Id = model.Id,
+                Name = model.Name
+            };
 
             try
             {
                 // カテゴリ更新処理を実行
-                var result = await _categoryService.UpdateCategoryAsync(category);
+                await _categoryService.UpdateCategoryAsync(categoryDto);
 
-                if (result)
-                {
-                    // 登録成功時、カテゴリ管理ページにリダイレクト
-                    return RedirectToAction(RedirectPaths.AdminCategoryManagement, RedirectPaths.AdminController);
-                }
-                else
-                {
-                    // 登録失敗時、エラーメッセージを表示
-                    ModelState.AddModelError(string.Empty, ErrorMessages.UpdateError);
-                    return View(category);
-                }
+                // 登録成功時、カテゴリ管理ページにリダイレクト
+                return RedirectToAction(RedirectPaths.AdminCategoryManagement, RedirectPaths.AdminController);
             }
             catch (BusinessException ex)
             {
                 // 業務例外をキャッチして処理
                 _logger.LogWarning(ex, "{BusinessException} ExceptionMessage: {ExceptionMessage}", ErrorMessages.BusinessException, ex.Message);
                 ModelState.AddModelError(string.Empty, ex.Message); // ユーザー向けのエラーメッセージを設定
-                return View(category);
+                return View(model);
             }
         }
 
@@ -123,18 +127,10 @@ namespace RaremintShop.WebHost.Controllers
             try
             {
                 // カテゴリ削除処理を実行
-                var result = await _categoryService.DeleteCategoryAsync(id);
+                await _categoryService.DeleteCategoryAsync(id);
 
-                if (result)
-                {
-                    // 成功メッセージをTempDataに設定
-                    TempData["SuccessMessage"] = ErrorMessages.DeleteSuccess;
-                }
-                else
-                {
-                    // 失敗メッセージをTempDataに設定
-                    TempData["ErrorMessage"] = ErrorMessages.DeleteError;
-                }
+                // 成功メッセージをTempDataに設定
+                TempData["SuccessMessage"] = ErrorMessages.DeleteSuccess;
             }
             catch (BusinessException ex)
             {

@@ -1,6 +1,6 @@
 ﻿using RaremintShop.Core.DTOs;
 
-namespace RaremintShop.Module.Identity.Services
+namespace RaremintShop.Core.Interfaces.Services
 {
     /// <summary>
     /// ユーザー管理、認証、およびロール管理のためのメソッドを提供します。
@@ -8,21 +8,18 @@ namespace RaremintShop.Module.Identity.Services
     public interface IUserService
     {
         // ユーザー管理
-        Task RegisterUserAsync(UserRegisterDto dto);
-        Task<string> LoginAsync(UserLoginDto dto);
+        Task RegisterUserAsync(UserDto userDto);
+        Task<string> LoginAsync(UserDto userDto);
         Task LogoutAsync();
-        Task<IdentityResult> DeleteUserAsync(IdentityUser user);
-        Task<IdentityResult> UpdateUserAsync(UserEditViewModel model);
+        Task DeleteUserAsync(string id);
+        Task UpdateUserAsync(UserDto userDto);
 
         // ユーザー情報取得
-        Task<List<UserManagementViewModel>> GetAllUsersAsync();
-        Task<> GetByEmailAsync(string email);
-        Task<IdentityUser?> GetByIdAsync(string id);
-        Task<UserEditViewModel> GetByIdForEditAsync(string id);
+        Task<List<UserDto>> GetAllUsersAsync();
+        Task<UserDto> GetByIdAsync(string id);
 
         // ロール管理
         Task<IList<string>> GetRolesAsync(string id);
-        Task<List<IdentityRole>> GetAllRolesAsync();
     }
 }
 
