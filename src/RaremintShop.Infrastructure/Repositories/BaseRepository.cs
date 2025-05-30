@@ -30,6 +30,12 @@ namespace RaremintShop.Infrastructure.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
+        public virtual async Task<bool> AddRangeAsync(IEnumerable<T> entities)
+        {
+            await _dbSet.AddRangeAsync(entities);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
         public virtual async Task<bool> UpdateAsync(T entity)
         {
             _dbSet.Update(entity);

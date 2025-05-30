@@ -5,23 +5,24 @@ using RaremintShop.Infrastructure.Data;
 
 namespace RaremintShop.Infrastructure.Repositories
 {
-    /// <summary>
-    /// 商品情報を管理するリポジトリの実装クラス
-    /// </summary>
-    public class ProductRepository : BaseRepository<Product>, IProductRepository
+    public class ProductImageRepository : BaseRepository<ProductImage>, IProductImageRepository
     {
         /// <summary>
         /// コンストラクタ。データベースコンテキストを受け取ります。
         /// </summary>
         /// <param name="context">データベースコンテキスト</param>
-        public ProductRepository(ApplicationDbContext context) : base(context)
+        public ProductImageRepository(ApplicationDbContext context) : base(context)
         {
+
         }
 
-        public async Task<bool> ExistsByNameAsync(string name)
+        public async Task<int> GetMaxSortOrderAsync(int productId)
         {
-            return await _dbSet.AnyAsync(p => p.Name == name);
+            return await _dbSet
+                .Where(pi => pi.ProductId == productId)
+                .Select(pi => pi.SortOrder)
+                .DefaultIfEmpty(0)
+                .MaxAsync();
         }
-
     }
 }

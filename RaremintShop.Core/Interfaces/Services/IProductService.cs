@@ -11,9 +11,7 @@ namespace RaremintShop.Core.Interfaces.Services
         Task<List<ProductDto>> GetAllProductsAsync();
 
         // 商品の登録
-        Task<bool> RegisterProductAsync(ProductRegisterViewModel model);
+        Task RegisterProductAsync(ProductDto productDto, List<ProductImageData> imageDatas);
 
-        // 商品の登録（DTO＋画像ファイルリストを受け取る）
-        Task RegisterProductAsync(ProductDto dto, List<IFormFile> images);
     }
 }

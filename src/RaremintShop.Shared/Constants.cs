@@ -12,8 +12,6 @@
             public const string ProductFetchError = "商品の取得中にエラーが発生しました。";
             public const string CategoryFetchError = "カテゴリの取得中にエラーが発生しました。";
             
-            public const string ProductRegisterError = "商品登録中にエラーが発生しました。";
-
             public const string FileSaveError = "ファイルの保存中にエラーが発生しました。";
             public const string FileEmptyError = "ファイルが空です。";
             public const string FileCategoryMissingError = "ファイルカテゴリが指定されていません。";
@@ -39,7 +37,7 @@
 
             // ユーザー系
             public const string UserNotFound = "ユーザーが見つかりません。";
-            public const string UserRegisterError = "ユーザー登録に失敗しました。";
+            public const string UserRegisterError = "ユーザーの登録に失敗しました。";
             public const string UserLogoutError = "ユーザーのログアウトに失敗しました。";
             public const string RoleDeleteError = "ロールの削除に失敗しました。";
             public const string RoleChangeError = "ロールの変更に失敗しました。";
@@ -49,9 +47,13 @@
 
             // カテゴリ系
             public const string CategoryNotFound = "カテゴリが見つかりません。";
-            public const string CategoryRegisterError = "カテゴリ登録に失敗しました。";
+            public const string CategoryRegisterError = "カテゴリの登録に失敗しました。";
             public const string CategoryUpdateError = "カテゴリの更新に失敗しました。";
             public const string CategoryDeleteError = "カテゴリの削除に失敗しました。";
+
+            // 商品系
+            public const string ProductRegisterError = "商品の登録に失敗しました。";
+            public const string ProductImagesRegisterError = "商品画像の登録に失敗しました。";
 
         }
 

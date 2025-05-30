@@ -77,10 +77,17 @@ namespace RaremintShop.WebHost.Controllers
                 // 画像は別で渡す
             };
 
+            // <画像データの変換>
+            var imageDatas = model.Images?.Select(file => new ProductImageData
+            {
+                FileName = file.FileName,
+                Data = GetBytesFromFormFile(file)
+            }).ToList() ?? new List<ProductImageData>();
+
             try
             {
                 // 商品登録処理を実行
-                var result = await _productService.RegisterProductAsync(dto, model.Images);
+                await _productService.RegisterProductAsync(dto, imageDatas);
 
                 // 登録成功時、商品管理ページにリダイレクト
                 TempData["SuccessMessage"] = ErrorMessages.RegisterSuccess;
@@ -97,6 +104,14 @@ namespace RaremintShop.WebHost.Controllers
                 model.CategoryList = new SelectList(categories, "Id", "Name");
                 return View(model);
             }
+        }
+
+        // IFormFileをbyte[]に変換するヘルパーメソッド
+        private static byte[] GetBytesFromFormFile(IFormFile file)
+        {
+            using var memoryStream = new MemoryStream();
+            file.CopyTo(memoryStream);
+            return memoryStream.ToArray();
         }
     }
 }
