@@ -396,3 +396,8 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+
+# Prevent sensitive config files from being committed
+appsettings.json
+appsettings.Development.json
