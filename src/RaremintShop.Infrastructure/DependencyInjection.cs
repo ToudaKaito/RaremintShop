@@ -24,7 +24,7 @@ namespace RaremintShop.Infrastructure
             services.AddScoped<ICategoryRepository, CategoryRepository>();
 
             // サービスを登録
-            services.AddScoped<IFileStorageService, LocalFileStorageService>();
+            services.AddSingleton<IFileStorageService, LocalFileStorageService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IUserService, UserService>();

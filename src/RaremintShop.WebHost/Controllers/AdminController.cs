@@ -183,13 +183,31 @@ namespace RaremintShop.WebHost.Controllers
             }
         }
 
-
+        // TODO
         [HttpGet]
         public async Task<IActionResult> ProductManagement()
         {
             try
             {
                 var products = await _productService.GetAllProductsAsync();
+                // DTO → ViewModel 変換
+                var productManagementViewModels = products
+                    .Select(p => new ProductManagementViewModel
+                    {
+                        Id = p.Id,
+                        CategoryId = p.CategoryId,
+                        Name = p.Name ?? string.Empty,
+                        Description = p.Description ?? string.Empty,
+                        Price = p.Price,
+                        Stock = p.Stock,
+                        IsPublished = p.IsPublished,
+                        CreatedAt = p.CreatedAt,
+                        UpdatedAt = p.UpdatedAt,
+                        ImageUrls = p.ImageUrls ?? new List<string>()
+                    })
+                    .ToList();
+
+                return View(productManagementViewModels);
             }
             catch (BusinessException ex)
             {

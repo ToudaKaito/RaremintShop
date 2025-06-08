@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using RaremintShop.Shared
+
+<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="utf-8" />
@@ -76,7 +79,13 @@
                         <!-- ログイン状態に応じた表示 -->
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <!-- ログイン済みの場合 -->
+                            // 管理者ロールを持つ場合のみ管理画面リンクを表示
+                            if (User.IsInRole(Constants.Roles.Admin))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Admin" asp-action="Dashboard">管理画面</a>
+                                </li>
+                            }
                             <li class="nav-item">
                                 <span class="nav-link">ようこそ, @User.Identity.Name さん</span>
                             </li>
@@ -88,7 +97,6 @@
                         }
                         else
                         {
-                            <!-- 未ログインの場合 -->
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Account" asp-action="Login">ログイン</a>
                             </li>

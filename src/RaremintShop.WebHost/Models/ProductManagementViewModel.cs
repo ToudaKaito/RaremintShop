@@ -1,6 +1,6 @@
-﻿namespace RaremintShop.Core.DTOs
+﻿namespace RaremintShop.WebHost.Models
 {
-    public class ProductDto
+    public class ProductManagementViewModel
     {
         public int Id { get; set; }
         public int CategoryId { get; set; }

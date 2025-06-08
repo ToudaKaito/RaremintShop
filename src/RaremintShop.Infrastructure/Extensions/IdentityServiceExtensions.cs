@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using RaremintShop.Core.Interfaces.Services;
 using RaremintShop.Infrastructure.Data;
-using RaremintShop.Module.Identity.Services;
+using RaremintShop.Infrastructure.Services;
 using static RaremintShop.Shared.Constants;
 
-namespace RaremintShop.Module.Identity.Extensions
+namespace RaremintShop.Infrastructure.Extensions
 {
     /// <summary>
     /// Identityの設定を拡張するためのクラス。
@@ -33,21 +34,16 @@ namespace RaremintShop.Module.Identity.Extensions
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
-            // UserServiceの追加
+            // UserServiceの追加（Identityに密接に関係するためここで登録）
             services.AddScoped<IUserService, UserService>();
 
             // Cookieおよびセッションの設定
             services.ConfigureApplicationCookie(options =>
             {
-                // Cookieの設定
-                options.Cookie.HttpOnly = true; // クッキーがJavaScriptからアクセスできないようにする
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // クッキーがHTTPS接続でのみ送信されるようにする
-
-                // リダイレクトパスの設定
-                options.LoginPath = "/Account/Login"; // 認証が必要なページにアクセスしようとしたときのリダイレクト先
-                options.AccessDeniedPath = "/Account/AccessDenied"; // アクセス権がないページにアクセスしようとしたときのリダイレクト先
-
-                // セッションの設定
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.LoginPath = "/Account/Login";
+                options.AccessDeniedPath = "/Account/AccessDenied";
                 options.Events.OnValidatePrincipal = async context =>
                 {
                     var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<IdentityUser>>();
@@ -58,17 +54,14 @@ namespace RaremintShop.Module.Identity.Extensions
 
                         if (isAdmin)
                         {
-                            // 管理者のセッション設定
-                            options.ExpireTimeSpan = TimeSpan.FromMinutes(15); // セッションの有効期限を15分に設定
-                            options.SlidingExpiration = false; // スライディングエクスピレーションを無効にする
+                            options.ExpireTimeSpan = TimeSpan.FromMinutes(15);
+                            options.SlidingExpiration = false;
                         }
                         else
                         {
-                            // 一般ユーザーのセッション設定
-                            options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // セッションの有効期限を60分に設定
-                            options.SlidingExpiration = true; // スライディングエクスピレーションを有効にする
+                            options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                            options.SlidingExpiration = true;
                         }
-                        // ※スライディングエクスピレーション: セッションの有効期限を延長する
                     }
                 };
             });

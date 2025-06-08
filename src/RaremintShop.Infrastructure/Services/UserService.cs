@@ -75,8 +75,14 @@ namespace RaremintShop.Infrastructure.Services
                 throw new BusinessException(ErrorMessages.UserRegisterError); // 登録失敗
             }
 
+            // 管理者メールアドレスならAdminロール、それ以外はUserロールを付与
+            // StringComparison.OrdinalIgnoreCase:大文字小文字区別しない
+            string roleToAssign = userDto.Email.Equals(AdminUser.Email, StringComparison.OrdinalIgnoreCase)
+                ? Roles.Admin
+                : Roles.User;
+
             // ユーザーにロールを割り当て
-            var roleResult = await _userManager.AddToRoleAsync(user, Roles.User);
+            var roleResult = await _userManager.AddToRoleAsync(user, roleToAssign);
             if (!roleResult.Succeeded)
             {
                 // debug用

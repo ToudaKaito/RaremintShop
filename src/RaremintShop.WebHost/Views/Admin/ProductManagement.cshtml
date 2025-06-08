@@ -1,4 +1,4 @@
-﻿@model List<RaremintShop.Module.Catalog.Models.CatalogViewModel>
+﻿@model List<RaremintShop.WebHost.Models.ProductManagementViewModel>
 
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml"; // 管理者用レイアウトを指定
@@ -9,6 +9,7 @@
     <h1 class="text-center mb-5">商品管理ページ</h1>
 
     <!-- 成功・エラーメッセージの表示 -->
+    @* 操作結果のメッセージを表示 *@
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success">
@@ -35,18 +36,34 @@
                 <th>商品名</th>
                 <th>価格</th>
                 <th>在庫数</th>
+                <th>公開</th>
+                <th>作成日</th>
+                <th>更新日</th>
                 <th>操作</th>
             </tr>
         </thead>
         <tbody>
+            @* 商品が存在する場合はリスト表示 *@
             @if (Model != null && Model.Any())
             {
-                @foreach (var product in Model)
+                foreach (var product in Model)
                 {
                     <tr>
                         <td>@product.Name</td>
                         <td>@product.Price.ToString("C")</td>
                         <td>@product.Stock</td>
+                        <td>
+                            @if (product.IsPublished)
+                            {
+                                <span class="badge bg-success">公開</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">非公開</span>
+                            }
+                        </td>
+                        <td>@product.CreatedAt.ToString("yyyy/MM/dd")</td>
+                        <td>@(product.UpdatedAt?.ToString("yyyy/MM/dd") ?? "-")</td>
                         <td>
                             <!-- 編集ボタン -->
                             <a asp-action="Edit" asp-controller="Catalog" asp-route-id="@product.Id" class="btn btn-warning btn-sm" aria-label="商品編集: @product.Name">編集</a>
@@ -62,8 +79,9 @@
             }
             else
             {
+                @* 商品が存在しない場合のメッセージ *@
                 <tr>
-                    <td colspan="4" class="text-center">商品が存在しません。</td>
+                    <td colspan="7" class="text-center">商品が存在しません。</td>
                 </tr>
             }
         </tbody>

@@ -1,4 +1,4 @@
-﻿@model List<RaremintShop.Module.Catalog.Models.CatalogViewModel>
+﻿@model List<RaremintShop.WebHost.Models.CatalogViewModel>
 
 @{
     ViewBag.Title = "商品一覧";
@@ -7,26 +7,38 @@
 <div class="container mt-5">
     <h1 class="text-center mb-5">商品一覧</h1>
 
-    @* <div class="row justify-content-center">
+    <div class="row justify-content-center">
         <!-- 商品リストをループして表示 -->
-        @foreach (var product in Model)
+        @if (Model != null && Model.Any())
         {
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm">
-                    <!-- 商品画像を表示。複数の画像がある場合は最初の画像を使用 -->
-                    <img src="@product.ImageUrls.FirstOrDefault()" class="card-img-top" alt="@product.Name">
-                    <div class="card-body text-center">
-                        <!-- 商品名を表示 -->
-                        <h5 class="card-title">@product.Name</h5>
-                        <!-- 商品説明を表示 -->
-                        <p class="card-text">@product.Description</p>
-                        <!-- 商品価格を表示。通貨形式にフォーマット -->
-                        <p class="card-text font-weight-bold">@product.Price.ToString("C")</p>
-                        <!-- 詳細ページへのリンクボタン -->
-                        <a href="#" class="btn btn-primary">詳細を見る</a>
+            foreach (var product in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <!-- 商品画像（最初の画像のみ表示、なければダミー画像） -->
+                        <img src="@(product.ImageUrls.FirstOrDefault() ?? "/images/noimage.png")"
+                             class="card-img-top"
+                             alt="@product.Name">
+                        <div class="card-body text-center">
+                            <!-- 商品名 -->
+                            <h5 class="card-title">@product.Name</h5>
+                            <!-- 商品説明 -->
+                            <p class="card-text">@product.Description</p>
+                            <!-- 商品価格 -->
+                            <p class="card-text font-weight-bold">@product.Price.ToString("C")</p>
+                            <!-- 詳細ページへのリンク（必要に応じてルーティングを修正） -->
+                            <a asp-controller="Catalog" asp-action="Detail" asp-route-id="@product.Id" class="btn btn-primary">詳細を見る</a>
+                        </div>
                     </div>
                 </div>
+            }
+        }
+        else
+        {
+            <!-- 商品が存在しない場合のメッセージ -->
+            <div class="col-12 text-center">
+                <p>商品が存在しません。</p>
             </div>
         }
-    </div> *@
+    </div>
 </div>

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using RaremintShop.Shared.Services;
+﻿using RaremintShop.Shared.Services;
 using static RaremintShop.Shared.Constants;
 
 namespace RaremintShop.Infrastructure.Services
@@ -11,13 +10,10 @@ namespace RaremintShop.Infrastructure.Services
     {
         private readonly string _rootPath;
 
-        public LocalFileStorageService(IWebHostEnvironment environment)
+        // string型でパスを受け取る
+        public LocalFileStorageService(string rootPath)
         {
-            if (environment == null)
-                throw new ArgumentNullException(nameof(environment));
-
-            // ルートパスを設定（例: wwwroot/images）
-            _rootPath = Path.Combine(environment.WebRootPath, "images");
+            _rootPath = rootPath ?? throw new ArgumentNullException(nameof(rootPath));
         }
 
         /// <summary>

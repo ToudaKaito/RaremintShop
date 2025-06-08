@@ -119,14 +119,16 @@ namespace RaremintShop.WebHost.Controllers
                 // 基本的にはエラーの場合はcatchで処理する
                 var role = await _userService.LoginAsync(dto);
 
-                if (role.Contains(Roles.Admin))
-                {
-                    return RedirectToAction(RedirectPaths.AdminDashboard, RedirectPaths.AdminController);
-                }
-                else
-                {
-                    return RedirectToAction(RedirectPaths.CatalogIndex, RedirectPaths.CatalogController);
-                }
+                return RedirectToAction(RedirectPaths.CatalogIndex, RedirectPaths.CatalogController);
+
+                //if (role.Contains(Roles.Admin))
+                //{
+                //    return RedirectToAction(RedirectPaths.AdminDashboard, RedirectPaths.AdminController);
+                //}
+                //else
+                //{
+                //    return RedirectToAction(RedirectPaths.CatalogIndex, RedirectPaths.CatalogController);
+                //}
             }
             catch (BusinessException ex)
             {

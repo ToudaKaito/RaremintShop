@@ -57,6 +57,13 @@
 
         }
 
+        // 開発環境用(本番では使用しない)
+        public static class AdminUser
+        {
+            public const string Email = "admin@example.com";
+            public const string Password = "AdminPassword123!";
+        }
+
         public static class  Roles
         {
             public const string Admin = "Admin";

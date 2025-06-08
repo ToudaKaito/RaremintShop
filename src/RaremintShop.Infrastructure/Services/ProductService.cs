@@ -29,14 +29,18 @@ namespace RaremintShop.Infrastructure.Services
         public async Task<List<ProductDto>> GetAllProductsAsync()
         {
             var products = await _productRepository.GetAllAsync();
-            return products.Select(p => new CatalogViewModel
+            return products.Select(p => new ProductDto
             {
                 Id = p.Id,
+                CategoryId = p.CategoryId,
                 Name = p.Name ?? string.Empty,
                 Description = p.Description ?? string.Empty,
                 Price = p.Price,
                 Stock = p.Stock,
-                ImageUrls = p.Images.Select(i => i.ImagePath).ToList()
+                IsPublished = p.IsPublished,
+                CreatedAt = p.CreatedAt,
+                UpdatedAt = p.UpdatedAt,
+                ImageUrls = p.Images?.Select(i => i.ImagePath).ToList() ?? new List<string>()
             }).ToList();
         }
 
@@ -59,10 +63,10 @@ namespace RaremintShop.Infrastructure.Services
             // Entityへ変換
             var product = new Product
             {
-                Name = productDto.Name,
-                Price = productDto.Price,
                 CategoryId = productDto.CategoryId,
-                Description = productDto.Description,
+                Name = productDto.Name ?? string.Empty,
+                Description = productDto.Description ?? string.Empty,
+                Price = productDto.Price,
                 Stock = productDto.Stock,
                 IsPublished = productDto.IsPublished,
                 CreatedAt = DateTime.UtcNow,

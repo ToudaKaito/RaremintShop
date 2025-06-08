@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using static RaremintShop.Shared.Constants;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using RaremintShop.Shared.Exceptions;
-using RaremintShop.WebHost.Models;
 using RaremintShop.Core.DTOs;
 using RaremintShop.Core.Interfaces.Services;
+using RaremintShop.Shared.Exceptions;
+using RaremintShop.WebHost.Models;
+using static RaremintShop.Shared.Constants;
 
 namespace RaremintShop.WebHost.Controllers
 {
@@ -29,14 +29,30 @@ namespace RaremintShop.WebHost.Controllers
         {
             try
             {
-                //var products = await _productService.GetAllProductsAsync();
-                return View(/*products*/);
+                // 商品一覧DTOを取得
+                var products = await _productService.GetAllProductsAsync();
+
+                // DTO → ViewModel 変換（プロパティ順も統一）
+                var catalogViewModels = products
+                    .Where(p => p.IsPublished) // 一般公開用なので公開商品のみ
+                    .Select(p => new CatalogViewModel
+                    {
+                        Id = p.Id,
+                        Name = p.Name ?? string.Empty,
+                        Description = p.Description ?? string.Empty,
+                        Price = p.Price,
+                        Stock = p.Stock,
+                        ImageUrls = p.ImageUrls ?? new List<string>()
+                    })
+                    .ToList();
+
+                return View(catalogViewModels);
             }
-            catch (Exception ex)
+            catch (BusinessException ex)
             {
-                // エラーメッセージを表示
-                _logger.LogError(ex, ErrorMessages.ProductFetchError);
-                ModelState.AddModelError(string.Empty, ErrorMessages.ProductFetchError);
+                // 業務例外を警告ログ＋ユーザー向けエラーメッセージ
+                _logger.LogWarning(ex, "{BusinessException} ExceptionMessage: {ExceptionMessage}", ErrorMessages.BusinessException, ex.Message);
+                ModelState.AddModelError(string.Empty, ex.Message);
                 return View(new List<CatalogViewModel>());
             }
         }
