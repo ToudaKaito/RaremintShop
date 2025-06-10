@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\RaremintShop.Core\RaremintShop.Core.csproj" />
+    <ProjectReference Include="..\RaremintShop.Core\RaremintShop.Core.csproj" />
     <ProjectReference Include="..\RaremintShop.Shared\RaremintShop.Shared.csproj" />
   </ItemGroup>
 

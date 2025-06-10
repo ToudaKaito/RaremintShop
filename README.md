@@ -32,20 +32,7 @@ RaremintShopは、学習目的で制作したショッピングサイトです。
 1. リポジトリをクローンします。  
 2. Visual Studio 2022でソリューションを開きます。  
 3. appsettings.json をプロジェクトルートに作成します。
-　 このファイルにはデータベース接続情報などが含まれるため、Gitには含めていません。以下テンプレートです。
-
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database=your_db;User=your_user;Password=your_password;"
-  },
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft.AspNetCore": "Warning"
-    }
-  }
-}
-
+　 データベース接続情報などが含まれるため、接続文字列は自身で設定してください。
 4. データベースはMySQLを使用しており、初回はマイグレーションを実行してください。  
 5. Visual Studioのデバッグ実行（F5）でローカルサーバーが起動します。  
 

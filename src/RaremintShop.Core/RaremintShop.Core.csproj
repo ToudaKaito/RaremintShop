@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\RaremintShop.Shared\RaremintShop.Shared.csproj" />
+    <ProjectReference Include="..\RaremintShop.Shared\RaremintShop.Shared.csproj" />
   </ItemGroup>
 
 </Project>
